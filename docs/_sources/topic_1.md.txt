@@ -3,6 +3,9 @@
 ```{toctree}
 :hidden:
 
+topic_1/bit_byte/index
+topic_1/int_representation/index
+topic_1/bit_level_ops/index
 topic_1/lab_1/index
 topic_1/assign_1/index
 ```

@@ -31,6 +31,8 @@ extensions = [
     "sphinx_inline_tabs",
 ]
 
+mathjax_path="https://cdn.staticfile.org/mathjax/3.2.2/es5/tex-mml-chtml.min.js"
+
 # -- Options for extlinks ----------------------------------------------------
 #
 
