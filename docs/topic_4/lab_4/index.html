@@ -1,0 +1,454 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="作业 4：深入泛型指针" href="../assign_4/index.html" /><link rel="prev" title="函数指针" href="../function_pointer/index.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>实验 4：泛型和回调 - CS102 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pied-piper-admonition.css?v=e32e2275" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     Please use <a href='https://pradyunsg.me/furo/'>the main documentation</a> instead. 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">CS102 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">CS102 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_0.html">开发环境</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of 开发环境</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/linux_intro/index.html">Linux 介绍</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Linux 介绍</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_on_windows.html">Windows MSYS2 环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_virtual_box.html">Ubuntu 虚拟机</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/command_line/linux_command.html">Linux 命令行</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Linux 命令行</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/basic.html">基本命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/file_operation.html">文件操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/searching.html">文件搜索</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/from_cxx_to_c/from_cxx_to_c.html">从 C++ 到 C</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of 从 C++ 到 C</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/simpio.html">simpio.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/strlib.html">strlib.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/pig_latin.html">Pig Latin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/lab_0/index.html">实验 0：上手 Linux 开发环境</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/assign_0/index.html">作业 0：使用 Linux 和 C</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_1.html">数据的表示</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of 数据的表示</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/lab_1/index.html">实验 1. 数据的表示</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/assign_1/index.html">作业 1. 有趣的位</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../topic_2.html">数组和指针</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../topic_3.html">栈和堆</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../topic_4.html">泛型编程</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of 泛型编程</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../void_pointer/index.html">泛型指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../function_pointer/index.html">函数指针</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">实验 4：泛型和回调</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assign_4/index.html">作业 4：深入泛型指针</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>实验 4：泛型和回调<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>本次实验带你了解原始内存的世界。目标是让你能够写出并使用将函数作为参数的代码（包括一些神秘的语法），并了解如何尽可能地利用类型系统来编写代码，以及在没有类型系统的情况下该如何处理。你应该知道如何正确调用 <code class="docutils literal notranslate"><span class="pre">memcpy/memmove</span></code>，确切地知道在哪里需要类型转换以及为什么需要，并且对二级指针的正确使用提高警惕。</p>
+<p>以下一些问题用于检测你的理解，并让你进一步思考这些概念：</p>
+<ul class="simple">
+<li><p>为什么必须在指针算术表达式中对 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 进行类型转换？</p></li>
+<li><p>当源和目标重叠时 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 的行为是什么？ <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 如何正确处理重叠区域？</p></li>
+<li><p><em>非对称比较函数</em>是将其两个 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 参数转换为不同的指针类型的函数。为什么将非对称比较函数传递给 <code class="docutils literal notranslate"><span class="pre">bsearch</span></code>？</p></li>
+<li><p>C 语言搜索函数找到元素后，通常返回一个指向该元素的指针，而不是元素本身。为什么是这样？</p></li>
+</ul>
+<section id="id2">
+<h2>学习目标<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>探索 C 语言中的 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 和函数指针如何用于泛型编程</p></li>
+<li><p>学习如何实现泛型函数和用户回调函数</p></li>
+<li><p>调试 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 陷阱</p></li>
+</ul>
+</section>
+<section id="id3">
+<h2>初始代码<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>你的个人用户目录下应该已经有 <code class="docutils literal notranslate"><span class="pre">cs102</span></code> 这个文件夹了，通过下面的命令拷贝初始代码到该目录中：</p>
+<div class="highlight-Shell notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>/home/cs102-shared/labs/lab4<span class="w"> </span>~/cs102
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2>回调函数<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>C 标准库中的通用排序/搜索函数（<code class="docutils literal notranslate"><span class="pre">qsort</span></code>、<code class="docutils literal notranslate"><span class="pre">bsearch</span></code>、<code class="docutils literal notranslate"><span class="pre">lfind</span></code> …）是可以对任何类型的数据进行排序/搜索的。然而，为了做到这一点，这些接口需要用户提供比较函数，以便让它们知道如何比较两个值。所有这些函数都使用相同形式的标准比较函数：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">comparison_fn_t</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="o">*</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>你实现的任何版本的比较函数，都要接收指向两个待比较值的指针，并返回一个表示比较大小的整数，类似 <code class="docutils literal notranslate"><span class="pre">strcmp</span></code> 的 <code class="docutils literal notranslate"><span class="pre">+/-/0</span></code> 返回值。</p>
+<p>要理解的最关键的问题是，所有通用操作都是<strong>通过指向值的指针</strong>来处理数据的，而不是直接处理值。通过地址引用数据是 C 支持泛型函数的基础。发送或接收实际值是不现实的，因为这些值的类型/大小各不相同。相反，交换的是指向值的指针。所有指针，无论指针对象是什么，都是与 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 类型兼容的 8 字节地址。</p>
+<p>比较函数的实现遵循以下类似的模式：</p>
+<ol class="arabic simple">
+<li><p>将 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 参数转换成已知类型的指针</p></li>
+<li><p>解引用类型化的指针以访问该值
+（步骤 1 和 2 通常结合起来，在一个表达式中进行强制转换并解引用）</p></li>
+<li><p>比较值以确定要返回的结果</p></li>
+</ol>
+<p>实际的比较逻辑（步骤 3）通常很简单；你必须小心的是步骤 1 和步骤 2 中对 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 的处理，确保不要出错。</p>
+<p>查看 <code class="docutils literal notranslate"><span class="pre">callbacks.c</span></code> 文件中的比较函数示例，了解每个函数是如何实现上述模式的。以下是一些需要思考的问题：</p>
+<ul class="simple">
+<li><p>这些回调函数内部立刻转换 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 参数并存储到类型正确的局部变量中。预先执行此操作，而不是每次使用时再转换并解引用，这样处理有什么优点？</p></li>
+<li><p>向 <code class="docutils literal notranslate"><span class="pre">qsort</span></code> 提供不同的比较函数，允许你使用不同的条件对数组进行排序。例如，对自定义结构体 <code class="docutils literal notranslate"><span class="pre">city</span></code> 进行操作的两个回调函数，分别按不同的字段进行排序。如何编写一个比较函数，实现逆序排序？如何编写一个比较函数，将一个字段作为主要排序顺序进行比较，再通过辅助字段来比较相等的字段？</p></li>
+<li><p>按邮政编码对城市进行排序的比较函数，该实现采用了一种快速的方法来计算正、负或零的比较结果，并返回两个值之间的差异。你明白它是如何运作的吗？这是比较整数值的常见快捷方式。（注意：如果差值超过 <code class="docutils literal notranslate"><span class="pre">INT_MAX</span></code>，减法就会溢出，因此如果需要支持此类极值，请使用 <code class="docutils literal notranslate"><span class="pre">if/else</span></code> 进行判断。）</p></li>
+<li><p>所有比较函数都符合上面列出的原型。这意味着任何比较函数都可以应用于任何类型的数组——不特定于任何类型。使用字符比较函数对 <code class="docutils literal notranslate"><span class="pre">int</span></code> 数组进行排序会产生什么结果？使用字符串比较函数对城市数组进行排序又会怎么样？</p></li>
+<li><p>仔细观察并识别 <code class="docutils literal notranslate"><span class="pre">compare_letters</span></code> 和 <code class="docutils literal notranslate"><span class="pre">compare_strings</span></code> 回调之间的细微差别。可以使用 <code class="docutils literal notranslate"><span class="pre">compare_letters</span></code> 按第一个字母对字符串数组进行排序吗？为什么？</p></li>
+<li><p>GNU <a class="reference external" href="https://www.gnu.org/software/libc/manual/html_node/Comparison-Functions.html">libc 文档</a>给出了一个 <code class="docutils literal notranslate"><span class="pre">compare_doubles</span></code> 比较函数的示例。乍一看，该实现逻辑有点难以理解，所以一起来研究一下。评估类似 <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">&gt;</span> <span class="pre">2</span></code> 之类的不等式的结果是什么？尝试在 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 中确认！在这个案例中，为什么两个不等式相减，可以计算出正确的结果？</p></li>
+</ul>
+</section>
+<section id="gfind-max">
+<h2>探究 gfind_max<a class="headerlink" href="#gfind-max" title="Link to this heading">#</a></h2>
+<p>在文件 <code class="docutils literal notranslate"><span class="pre">generic.c</span></code> 中包含了一些写好的代码。其中，<code class="docutils literal notranslate"><span class="pre">gfind_max</span></code> 是我们编写的一个通用函数，根据用户提供的比较函数查找最大的数组元素。查看该函数的实现，先了解下泛型函数是如何实现的。</p>
+<p>以下一些问题用于检测你的理解，并让你进一步思考这些概念：</p>
+<ul class="simple">
+<li><p>第 40 行是一个对通用数组中第 <code class="docutils literal notranslate"><span class="pre">i</span></code> 个位置的惯用访问方式。确保理解该表达式的目的和操作逻辑。类型转换为 <code class="docutils literal notranslate"><span class="pre">(char*)</span></code> 的目的是什么？删除该转换会产生什么后果？</p></li>
+<li><p>网站 <a class="reference external" href="https://cdecl.org/">cdecl.org</a> 可以将声明从“C 乱码转换成英语”。当试图解开一个难以理解的声明时，这个工具很方便。复制 <code class="docutils literal notranslate"><span class="pre">compare_function</span></code> 的参数声明并粘贴到 <code class="docutils literal notranslate"><span class="pre">cdecl</span></code> 中，看看其英文解释。</p></li>
+<li><p>需要注意的是，通过函数指针实现的回调函数，看起来与普通函数调用几乎相同。如果尝试使用错误数量或类型的参数调用函数指针时，会发生什么情况？尝试编辑 <code class="docutils literal notranslate"><span class="pre">generic.c</span></code>， 修改 <code class="docutils literal notranslate"><span class="pre">gfind_max</span></code> 的参数，删除 <code class="docutils literal notranslate"><span class="pre">compare_function</span></code> 的一个参数，看看会发生什么。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">gfind_max</span></code> 返回一个 <code class="docutils literal notranslate"><span class="pre">void*</span></code>。该指针代表什么？为什么函数返回一个指向值的指针而不是值本身？</p></li>
+<li><p>用户如何使用 <code class="docutils literal notranslate"><span class="pre">gfind_max</span></code> 来查找最小元素而不是最大元素？</p></li>
+</ul>
+<p>然而 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 接口天生的宽松的特性，必然会带来危险的客户体验。滥用泛型函数的方法有很多种，并且编译器通常不会警告你的这些违规行为。让我们进一步探讨这种情况。</p>
+<p>文件 <code class="docutils literal notranslate"><span class="pre">generic.c</span></code> 中的 <code class="docutils literal notranslate"><span class="pre">test_max</span></code> 函数对 <code class="docutils literal notranslate"><span class="pre">gfind_max</span></code> 进行了四次调用。第一次调用完全正确，并打印了预期的结果。随后的三个调用中的每个调用，在某种程度上都是不正确的。对于下面的每一个，尝试计算出你认为会打印的内容，然后通过运行程序来验证你的理解是否正确。在 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 中绘制内存图并跟踪程序的状态，可能对理解程序的行为非常有帮助。</p>
+<ul class="simple">
+<li><p>不正确的调用 <code class="docutils literal notranslate"><span class="pre">call</span> <span class="pre">#1</span></code> 传递了一个用于 <code class="docutils literal notranslate"><span class="pre">int</span></code> 元素数组的 <code class="docutils literal notranslate"><span class="pre">char</span></code> 比较函数。奇怪的是，为什么这样的错误调用没有编译或运行时报错？运行 <code class="docutils literal notranslate"><span class="pre">Valgrind</span></code> 报告有什么帮助吗？在这种情况下 <code class="docutils literal notranslate"><span class="pre">gfind_max</span></code> 的表现如何？</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">call</span> <span class="pre">#2</span></code> 中的错误是什么？报告的“最大值”从哪里来？注意字节的顺序，我们的服务器采用的是“小端法”表示。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">call</span> <span class="pre">#3</span></code> 中的错误是什么？为什么这个调用总是返回指向最后一个元素的指针？</p></li>
+</ul>
+</section>
+<section id="bsearch-bug">
+<h2>探究 bsearch_bug<a class="headerlink" href="#bsearch-bug" title="Link to this heading">#</a></h2>
+<p>现在检查文件 <code class="docutils literal notranslate"><span class="pre">bsearch_bug.c</span></code> 中的函数 <code class="docutils literal notranslate"><span class="pre">test_bsearch</span></code>。 <code class="docutils literal notranslate"><span class="pre">bsearch</span></code> 是一个 C 标准库函数，用于搜索数组中的元素。通常，为了使 <code class="docutils literal notranslate"><span class="pre">bsearch</span></code> 能够正常工作，必须使用搜索时使用的相同比较函数对数组进行排序。编写此函数的程序员却无法理解这个机制，他不明白为什么可以使用相同的比较函数。最终，他的实现使用了与排序时不同的比较来进行搜索。他知道这样的实现不太好，但无法找到正确的解决方案。</p>
+<blockquote>
+<div><p>在开始之前，请记住核心原则：所有泛型操作都是通过<strong>指向值的指针</strong>来处理数据的，而不是直接处理值。当你探索这些代码时，请记住这一点。绘制内存图并跟踪正在使用的指针和间接引用的级别。此代码是作业 4 中常见的错误示例，因此现在深入了解它，可以更好地完成作业！</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>按原样编译程序并运行它，可以观察到，尽管比较函数不匹配，但它似乎确实有效。更改代码，使用 <code class="docutils literal notranslate"><span class="pre">compare_first_characters</span></code> 作为排序和搜索的比较函数。运行这个版本时，程序就会崩溃。<strong>代码中的哪个操作会崩溃？为什么</strong>？</p></li>
+<li><p>原作者的解决方法是添加一个不同的比较函数用于搜索。这是一个潜在的危险操作，该比较函数将其两个 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 参数类型转换为不同的指针对象类型。它能够正常“工作”的机制并不周全，并且依赖于 <code class="docutils literal notranslate"><span class="pre">bsearch</span></code> 实现中的一些具体细节，这对于其他通用函数的实现来说可能不正确。<strong>你能看出是什么细节吗</strong>？如果你非常仔细地阅读 <code class="docutils literal notranslate"><span class="pre">man</span> <span class="pre">bsearch</span></code> 的文档，你会发现，只根据文档要求来，这个实现细节肯定是正确的（查看文档的第二段），但以这种方式实现，仍然不是一个好主意，有一点拼凑的嫌疑（提示：比较函数的第一个参数代表什么？第二个参数代表什么？）</p></li>
+<li><p>对代码进行正确的修复，使用相同的比较函数 <code class="docutils literal notranslate"><span class="pre">compare_first_characters</span></code> 进行排序和搜索，并使程序正常工作（提示：在调用 <code class="docutils literal notranslate"><span class="pre">bsearch</span></code> 时仔细查看传递给 <code class="docutils literal notranslate"><span class="pre">bsearch</span></code> 的参数值）。</p></li>
+</ul>
+<p>本练习的目的是强调作为用户，在使用 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 接口时保持警惕的必要性。同时也说明在编写代码时，试图通过反复试验并拼凑出一份正确代码，也是徒劳的。</p>
+<p>虽然随机排列 <code class="docutils literal notranslate"><span class="pre">*</span></code> <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> 和类型转换可能最终会得到正确的组合，但这种方法对你的理解绝对没有任何帮助。</p>
+<p>相反，如果你花点时间在纸上画出操作过程、绘制图表并在 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 中跟踪执行情况，那么你就会明白在什么样的上下文中使用什么级别的间接引用更合适，并且能够深刻理解其中的原因。加油吧，少年！</p>
+</section>
+<section id="memmove">
+<h2>探究 memmove<a class="headerlink" href="#memmove" title="Link to this heading">#</a></h2>
+<p>C 标准库提供了一些原始内存（raw memory）相关函数，可以对未指定类型的数据进行内存级别的操作（例如 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code>、<code class="docutils literal notranslate"><span class="pre">memset</span></code> 等）。在文件 <code class="docutils literal notranslate"><span class="pre">memmove.c</span></code> 中包含了一个 <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 的实现，该版本基于 <code class="docutils literal notranslate"><span class="pre">musl</span></code> 的实现代码。一起来研究下函数的实现，以便更好地理解这些函数是如何实现的。</p>
+<p>以下一些问题用于检测你的理解，并让你进一步思考这些概念：</p>
+<ul class="simple">
+<li><p>该函数的接口将其参数声明为 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 指针，但在内部它将这些指针作为 <code class="docutils literal notranslate"><span class="pre">char*</span></code> 进行操作。这里为什么不一致？尝试通过将接口声明为 <code class="docutils literal notranslate"><span class="pre">char*</span></code> 或更改实现为 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 来统一操作，这将产生什么后果？</p></li>
+<li><p>请注意第 11 和 12 行，非类型化指针赋值给类型化指针时，没有强制类型转换。<code class="docutils literal notranslate"><span class="pre">void*</span></code> 是通用指针，可以与其他指针类型自由交换，无需强制转换。话虽如此，关于是否需要强制类型转换的争议问题，网上一直存在着<a class="reference external" href="https://stackoverflow.com/questions/605845/do-i-cast-the-result-of-malloc">一场持续不断的讨论</a>；这里采用的策略是不作转换，因为这是非必需的。</p></li>
+<li><p>第 14 行在处理什么特殊情况？</p></li>
+<li><p>查看 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 和 <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 的 <code class="docutils literal notranslate"><span class="pre">man</span></code> 文档，了解这两个函数之间的差异。第 18 行在处理什么特殊情况？</p></li>
+<li><p>第 22 和 27 行的 <code class="docutils literal notranslate"><span class="pre">if/else</span></code> 区分了哪两种情况？为什么这两种情况都是必要的？</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">memmove</span></code> 的 <code class="docutils literal notranslate"><span class="pre">man</span></code> 文档指出，该操作就像复制了两次数据一样（<code class="docutils literal notranslate"><span class="pre">src-&gt;temp</span></code>、<code class="docutils literal notranslate"><span class="pre">temp-&gt;dst</span></code>），这意味着调用 <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 的时间可能是调用 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 的两倍。然而，<code class="docutils literal notranslate"><span class="pre">musl</span></code> 并没有按照文档字面的方式实现。它不仅正确处理了重叠问题，还避免了复制两次的问题。那么它是如何操作的呢？关注下第 24~26 行和第 29-31 行——每个循环中发生了什么？在此实现中，使用 <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 相对于 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 的额外成本预期是多少？</p></li>
+<li><p>跟踪调用 <code class="docutils literal notranslate"><span class="pre">musl_memmove(NULL,</span> <span class="pre">&quot;cs102&quot;,</span> <span class="pre">0)</span></code>，请问尝试读/写无效指针是否会导致段错误？为什么？调用 <code class="docutils literal notranslate"><span class="pre">musl_memmove(NULL,</span> <span class="pre">&quot;cs102&quot;,</span> <span class="pre">-1)</span></code> 的情况又是什么？通过运行 <code class="docutils literal notranslate"><span class="pre">memmove.c</span></code> 程序来验证你的理解。</p></li>
+<li><p>为什么不总是使用 <code class="docutils literal notranslate"><span class="pre">memmove</span></code>？<code class="docutils literal notranslate"><span class="pre">man</span></code> 文档似乎暗示在使用 <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 而不是 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 时，某些实现（尽管不是 <code class="docutils literal notranslate"><span class="pre">musl</span></code>）确实会受到性能影响。此外，适当地使用 <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 和 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code> 可以告诉某些代码读取器，数据是否会发生重叠。鉴于此，我们默认使用 <code class="docutils literal notranslate"><span class="pre">memcpy</span></code>，仅在必要时使用 <code class="docutils literal notranslate"><span class="pre">memmove</span></code>。</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">memmove</span></code> 的实现可能会让你想起 <code class="docutils literal notranslate"><span class="pre">strncpy</span></code> 函数。 <code class="docutils literal notranslate"><span class="pre">memxxx</span></code> 函数与其 <code class="docutils literal notranslate"><span class="pre">strxxx</span></code> 等效函数有很多共同点，特殊情况是没有在零字节处停止。事实上，<code class="docutils literal notranslate"><span class="pre">memxxx</span></code> 函数包含在 <code class="docutils literal notranslate"><span class="pre">&lt;string.h&gt;</span></code> 模块中，并且很可能是由同一作者编写的。</p>
+</section>
+<section id="gdb">
+<h2>GDB 调试技巧<a class="headerlink" href="#gdb" title="Link to this heading">#</a></h2>
+<p>我们会定期尝试向你介绍新的有用的 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 命令或功能，目的是帮助你进行调试。本次实验，我们介绍“检查”命令，以及如何打印数组。对于每一个命令，尝试设置断点并打印 <code class="docutils literal notranslate"><span class="pre">gdb_practice.c</span></code> 文件中的值，我们已经在其中声明了一些变量。请随意编辑并使用该文件，以便熟悉这些功能。</p>
+<p>检查命令 <code class="docutils literal notranslate"><span class="pre">x</span></code>（单击<a class="reference external" href="https://ftp.gnu.org/old-gnu/Manuals/gdb/html_chapter/gdb_9.html#SEC56">此处</a>查看文档）是一个很有用的命令，用于检查内存内容，但与内存中的数据类型无关。它类似于 <code class="docutils literal notranslate"><span class="pre">print</span></code>，但针对的是通用内存而不是特定类型的变量。</p>
+<p>例如，你可以使用 <code class="docutils literal notranslate"><span class="pre">x</span></code> 打印给定地址开始的一定数量的字节。例如，如果有一个指针 <code class="docutils literal notranslate"><span class="pre">ptr</span></code>，则可以通过执行 <code class="docutils literal notranslate"><span class="pre">x/8bx</span> <span class="pre">ptr</span></code> 打印出从指针记录的位置开始的 8 个字节，其中包含的是十六进制的地址。斜杠后面的可选参数指定你要打印的内容。第一个（例如 <code class="docutils literal notranslate"><span class="pre">8</span></code> 或 <code class="docutils literal notranslate"><span class="pre">2</span></code>）指定要检查的数量，第二个（例如 <code class="docutils literal notranslate"><span class="pre">b</span></code> 或 <code class="docutils literal notranslate"><span class="pre">w</span></code>）指定要打印的单位是字节还是字（一个字为 4 个字节）等，第三个（例如 <code class="docutils literal notranslate"><span class="pre">x</span></code>）指定如何打印它们（例如 <code class="docutils literal notranslate"><span class="pre">x</span></code> 代表十六进制，<code class="docutils literal notranslate"><span class="pre">d</span></code> 代表十进制）。</p>
+<p>准备好后，请使用 <code class="docutils literal notranslate"><span class="pre">gdb_practice</span></code> 尝试以下操作：</p>
+<ul class="simple">
+<li><p>在 <code class="docutils literal notranslate"><span class="pre">gdb_practice</span></code> 程序上运行 <code class="docutils literal notranslate"><span class="pre">gdb</span></code>。在 <code class="docutils literal notranslate"><span class="pre">main</span></code> 上设置断点，并单步执行变量声明/初始化（包括数组 <code class="docutils literal notranslate"><span class="pre">nums</span></code>）之后的函数。</p></li>
+<li><p>尝试 <code class="docutils literal notranslate"><span class="pre">x/4bx</span> <span class="pre">ptr</span></code> 以十六进制打印出从 <code class="docutils literal notranslate"><span class="pre">ptr</span></code> 中的地址开始的 4 个字节。你看到了什么？这是为什么？</p></li>
+<li><p>尝试 <code class="docutils literal notranslate"><span class="pre">x/8bx</span> <span class="pre">ptr</span></code> 以十六进制打印出从 <code class="docutils literal notranslate"><span class="pre">ptr</span></code> 中的地址开始的 8 个字节。你看到了什么？这是为什么？ （提示：<code class="docutils literal notranslate"><span class="pre">number2</span></code> 和 <code class="docutils literal notranslate"><span class="pre">number</span></code> 的位置有什么关系？）</p></li>
+<li><p>尝试 <code class="docutils literal notranslate"><span class="pre">x/8bx</span> <span class="pre">nums</span></code> 以十六进制打印从数组 <code class="docutils literal notranslate"><span class="pre">nums</span></code> 开头开始的 8 个字节。你看到了什么？这是为什么？</p></li>
+</ul>
+<p>如果从栈数组的声明函数中打印栈数组，<code class="docutils literal notranslate"><span class="pre">gdb</span></code> 将显示该数组及其内容。在这种情况下，<code class="docutils literal notranslate"><span class="pre">gdb</span></code> 可以访问元素类型和元素计数，并利用这些信息来打印整个数组的表示。但是，在其他上下文中，它不能自动执行相同的操作，例如堆数组或传递到函数中的数组/指针。</p>
+<ul class="simple">
+<li><p>在 <code class="docutils literal notranslate"><span class="pre">main</span></code> 函数中尝试使用 <code class="docutils literal notranslate"><span class="pre">print</span></code> 打印 <code class="docutils literal notranslate"><span class="pre">nums</span></code></p></li>
+<li><p>在 <code class="docutils literal notranslate"><span class="pre">my_function</span></code> 中再次尝试此操作，查看该行为</p></li>
+</ul>
+<p>然而，在这些上下文中打印整个数组是可行的，但你必须向 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 提供更多信息。让我们看看如何操作：</p>
+<ul class="simple">
+<li><p>在 <code class="docutils literal notranslate"><span class="pre">gdb_practice</span></code> 程序上运行 <code class="docutils literal notranslate"><span class="pre">gdb</span></code>。在 <code class="docutils literal notranslate"><span class="pre">main</span></code> 上设置断点，并单步执行变量声明/初始化（包括数组 <code class="docutils literal notranslate"><span class="pre">nums</span></code>）之后的函数。</p></li>
+<li><p>尝试 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">num</span></code>。在其声明的上下文中，<code class="docutils literal notranslate"><span class="pre">gdb</span></code> 知道它是一个特定大小的栈数组，并且可以显示整个栈数组的内容。很棒！</p></li>
+<li><p>尝试 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">argv</span></code>。 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 对 <code class="docutils literal notranslate"><span class="pre">argv</span></code> 的了解就是它是一个指针。糟糕！</p></li>
+<li><p>尝试 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">argv[0]&#64;argc</span></code>，<code class="docutils literal notranslate"><span class="pre">gdb</span></code> 现在将打印 <code class="docutils literal notranslate"><span class="pre">argv</span></code> 数组的全部内容。万岁！</p></li>
+<li><p>要学习的语法是 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">ELEM&#64;COUNT</span></code>，其中 <code class="docutils literal notranslate"><span class="pre">ELEM</span></code> 是要打印的<strong>第一个元素</strong>，<code class="docutils literal notranslate"><span class="pre">COUNT</span></code> 是要打印的元素的数量。 <code class="docutils literal notranslate"><span class="pre">ELEM</span></code> 和 <code class="docutils literal notranslate"><span class="pre">COUNT</span></code> 是 C 表达式，可以引用当前作用域中的任何变量。尝试 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">nums[1]&#64;2</span></code> 显示数组中间的 2 个元素。</p></li>
+<li><p>尝试在 <code class="docutils literal notranslate"><span class="pre">my_function</span></code> 函数使用此功能来打印传入的数组内容。</p></li>
+<li><p>如果需要，你还可以添加类型转换。例如，给定一个 <code class="docutils literal notranslate"><span class="pre">void*</span></code> 类型的参数 <code class="docutils literal notranslate"><span class="pre">ptr</span></code>，你知道它是 <code class="docutils literal notranslate"><span class="pre">char*</span></code> 类型的 <code class="docutils literal notranslate"><span class="pre">nelems</span></code> 元素数组的基地址，那么你就可以使用 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">*(char**)ptr&#64;nelems</span></code> 打印整个数组。</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../assign_4/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">作业 4：深入泛型指针</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../function_pointer/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">函数指针</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, <a href='https://www.stickmind.com/' target="_blank">StickMind</a>
+            </div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">实验 4：泛型和回调</a><ul>
+<li><a class="reference internal" href="#id2">学习目标</a></li>
+<li><a class="reference internal" href="#id3">初始代码</a></li>
+<li><a class="reference internal" href="#id4">回调函数</a></li>
+<li><a class="reference internal" href="#gfind-max">探究 gfind_max</a></li>
+<li><a class="reference internal" href="#bsearch-bug">探究 bsearch_bug</a></li>
+<li><a class="reference internal" href="#memmove">探究 memmove</a></li>
+<li><a class="reference internal" href="#gdb">GDB 调试技巧</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=7d86a446"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    </body>
+</html>

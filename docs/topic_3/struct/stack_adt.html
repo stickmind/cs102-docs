@@ -1,0 +1,611 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
+
+    <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
+        <title>设计栈抽象数据类型 - CS102 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pied-piper-admonition.css?v=e32e2275" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     Please use <a href='https://pradyunsg.me/furo/'>the main documentation</a> instead. 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">CS102 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">CS102 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_0.html">开发环境</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of 开发环境</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/linux_intro/index.html">Linux 介绍</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Linux 介绍</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_on_windows.html">Windows MSYS2 环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_virtual_box.html">Ubuntu 虚拟机</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/command_line/linux_command.html">Linux 命令行</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Linux 命令行</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/basic.html">基本命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/file_operation.html">文件操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/searching.html">文件搜索</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/from_cxx_to_c/from_cxx_to_c.html">从 C++ 到 C</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of 从 C++ 到 C</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/simpio.html">simpio.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/strlib.html">strlib.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/pig_latin.html">Pig Latin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/lab_0/index.html">实验 0：上手 Linux 开发环境</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/assign_0/index.html">作业 0：使用 Linux 和 C</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_1.html">数据的表示</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of 数据的表示</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/lab_1/index.html">实验 1. 数据的表示</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/assign_1/index.html">作业 1. 有趣的位</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../topic_2.html">数组和指针</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../topic_3.html">栈和堆</a></li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_4.html">泛型编程</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of 泛型编程</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/void_pointer/index.html">泛型指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/function_pointer/index.html">函数指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/lab_4/index.html">实验 4：泛型和回调</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/assign_4/index.html">作业 4：深入泛型指针</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>设计栈抽象数据类型<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<div class="toc"></div>
+<p>编程不是学习语法，写一些简单的测试程序，而是创造一些能够改善生活，提高工作效率的软件。</p>
+<p>C 语言提供的工具相比 C++ 来说非常简陋，没有容器、模板，没有很多高级技术可供直接使用。所以为了让编程的过程更简单，我们可以尝试创建一些通用的抽象数据类型，以库的形式供自己或他人使用，方便创建一些更高阶的应用程序。</p>
+<p>例如，设计一个 RPN 计算器，如果有一个类似 C++ 中的 <code class="docutils literal notranslate"><span class="pre">stack</span></code> 容器，那么编程过程将会非常简单。</p>
+<blockquote>
+<div><p>能写出抽象栈的程序员，并不一定能够写出一个 RPN 计算器。相反，能够写出 RPN 计算器的程序员，也不见得能够实现一个抽象栈。</p>
+<p>计算机是一个极度分层的系统，不同的人负责不同的组件，大家各司其职才能创建一套复杂的系统。</p>
+</div></blockquote>
+<p>栈是一个抽象数据类型。在计算机科学中，栈有着标准的接口，通过研究该具体案例可以帮助我们理解接口的设计原则，与此同时，在实现代码的过程中还可以练习编程语言（例如 C 或 C++）的一些处理细节。</p>
+<section id="part-1">
+<h2>Part 1. 定义栈的抽象类型<a class="headerlink" href="#part-1" title="Link to this heading">#</a></h2>
+<p>栈的<strong>抽象类型</strong>一般都是用直接的英文名称命名，例如 <code class="docutils literal notranslate"><span class="pre">stack</span></code> 或 <code class="docutils literal notranslate"><span class="pre">Stack</span></code>。我们希望用户可以使用类型 <code class="docutils literal notranslate"><span class="pre">stack</span></code> 定义数据对象：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">stack</span><span class="w"> </span><span class="n">s1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>在 C 语言中，定义一个新的类型可以使用 <code class="docutils literal notranslate"><span class="pre">typedef</span></code>，所以我们可以使用如下语句定义栈的抽象类型：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="n">ActualType</span><span class="w"> </span><span class="n">stack</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>注意：与抽象类型相对的是具体的<strong>实现类型</strong>，此处暂用 <code class="docutils literal notranslate"><span class="pre">ActualType</span></code> 表示。</p>
+<blockquote>
+<div><p><strong>设计原则</strong></p>
+<p>抽象类型属于接口部分，必须对用户可见，以上类型定义应该放在 <code class="docutils literal notranslate"><span class="pre">.h</span></code> 头文件中</p>
+</div></blockquote>
+<p>在前置课程中，我们已经了解过，栈通常可以使用链表或动态数组来实现。在本案例中，我们选择使用链表来实现具体的数据表示，而动态数组相关的练习在作业 3 中已有体现。</p>
+<p>遗憾的是，在 C 语言中，没有现成的链表类型可供使用。我们可以使用结构体尝试创建一个简单的链表表示：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="kt">double</span><span class="w"> </span><span class="n">elem_t</span><span class="p">;</span><span class="w">  </span><span class="c1">// 为什么要抽象出 elem_t？</span>
+
+<span class="k">struct</span><span class="w"> </span><span class="nc">cell_t</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">elem_t</span><span class="w"> </span><span class="n">element</span><span class="p">;</span>
+<span class="w">    </span><span class="k">struct</span><span class="w"> </span><span class="nc">cell_t</span><span class="o">*</span><span class="w"> </span><span class="n">link</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">cell_t</span><span class="w"> </span><span class="n">node_t</span><span class="p">;</span>
+
+<span class="k">typedef</span><span class="w"> </span><span class="n">node_t</span><span class="o">*</span><span class="w"> </span><span class="n">list_t</span><span class="p">;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>类型 <code class="docutils literal notranslate"><span class="pre">list_t</span></code> 是链表类型，本质上是一个指向节点的指针</p></li>
+<li><p>类型 <code class="docutils literal notranslate"><span class="pre">node_t</span></code> 使用结构体定义了链表的结点，节点包含数据和一个指向下一个节点的指针</p></li>
+<li><p>由于 C 没有模板类型，为了让容器支持更多元素类型，此处抽象出一个类型 <code class="docutils literal notranslate"><span class="pre">elem_t</span></code>  便于切换数据类型（在 RPN 应用中，使用 <code class="docutils literal notranslate"><span class="pre">double</span></code> 作为数据类型）</p></li>
+</ul>
+<blockquote>
+<div><p><strong>设计原则</strong></p>
+<p>不应该透露底层数据表示，以上定义应该放入 <code class="docutils literal notranslate"><span class="pre">.c</span></code> 实现文件中</p>
+</div></blockquote>
+<section id="id2">
+<h3>编译问题<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>此时如果直接在头文件中修改 <code class="docutils literal notranslate"><span class="pre">struct</span></code> 定义，编译器将提示 “<strong>error: unknown type name ‘list’</strong>” 错误：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="n">list_t</span><span class="w"> </span><span class="n">stack</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>这是因为编译器是从上到下依次分析代码的。当导入头文件 <code class="docutils literal notranslate"><span class="pre">#include</span> <span class="pre">&quot;stack.h&quot;</span></code> 后 ，编译器读取到上述定义时发现系统中并没有 <code class="docutils literal notranslate"><span class="pre">list_t</span></code> 的定义，无法确定类型就没有办法确定内存的分配大小（该定义在 <code class="docutils literal notranslate"><span class="pre">.c</span></code> 实现文件中，对客户隐藏）。</p>
+<p>在 C 语言中，避免该问题可以使用<strong>结构体指针</strong>，即便不知道结构体具体实现，其指针的大小也是固定的，即一个字（word）的大小。上述代码可以修改为：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">stack_t</span><span class="o">*</span><span class="w"> </span><span class="n">stack</span><span class="p">;</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>此处使用 <code class="docutils literal notranslate"><span class="pre">stack_t</span></code> 替换 <code class="docutils literal notranslate"><span class="pre">list_t</span></code>，避免暴露底层数据表示。</p>
+</div></blockquote>
+<p>对应链表的实现部分，<code class="docutils literal notranslate"><span class="pre">list_t</span></code> 也应该调整为：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">stack_t</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">node_t</span><span class="o">*</span><span class="w"> </span><span class="n">start</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">list_t</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="part-2">
+<h2>Part 2. 定义栈的接口<a class="headerlink" href="#part-2" title="Link to this heading">#</a></h2>
+<p>由于接口隐藏了底层的数据表示，所以用户不能直接对 <code class="docutils literal notranslate"><span class="pre">s</span></code> 进行任何操作，即便是最基本的初始化（可能是链表初始化、可能是动态数组初始化、也可能……谁知道呢）。</p>
+<blockquote>
+<div><p><strong>设计原则</strong></p>
+<p>抽象数据类型必须通过接口操作底层数据结构。</p>
+</div></blockquote>
+<p>在 C 语言中，我们必须通过一组函数集合来指向抽象数据类型的具体操作。参考前置课程中的 <code class="docutils literal notranslate"><span class="pre">Stack</span></code> 接口设计，我们定义了如下操作接口：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// 构造和析构函数</span>
+<span class="n">stack</span><span class="w"> </span><span class="nf">new_stack</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">delete_stack</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+
+<span class="c1">// 修改函数</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">elem_t</span><span class="w"> </span><span class="n">element</span><span class="p">);</span>
+<span class="n">elem_t</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">clear_stack</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+
+<span class="c1">// 访问函数</span>
+<span class="n">elem_t</span><span class="w"> </span><span class="nf">peek</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="kt">bool</span><span class="w"> </span><span class="nf">is_stack_empty</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">stack_size</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+<span class="kt">void</span><span class="w"> </span><span class="nf">print_stack</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>用户可以这样初始化/操作一个栈：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">stack</span><span class="w"> </span><span class="n">s1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">new_stack</span><span class="p">();</span>
+<span class="n">push</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="w"> </span><span class="mf">3.14</span><span class="p">);</span>
+<span class="n">delete_stack</span><span class="p">(</span><span class="n">s1</span><span class="p">);</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>编译器警告</strong></p>
+<p>此时头文件没有 <code class="docutils literal notranslate"><span class="pre">elem_t</span></code>，我们可以将定义转移到头文件中</p>
+</div></blockquote>
+<blockquote>
+<div><p><strong>设计原则</strong></p>
+<p>虽然转移到头文件中可以方便用户修改具体数据类型，但却违背了接口设计原则。因为修改后需重新编译库文件，所以必须提供 <code class="docutils literal notranslate"><span class="pre">.c</span></code> 实现文件，这样就暴露了底层数据表示。</p>
+<p>以目前的知识储备，我们暂时没有两全其美的办法！（话题 4 再尝试解决这个问题）</p>
+</div></blockquote>
+</section>
+<section id="part-3-new-stack">
+<h2>Part 3. 构造函数 new_stack<a class="headerlink" href="#part-3-new-stack" title="Link to this heading">#</a></h2>
+<p>构造函数用于创建一个空栈，即一个简单的 <code class="docutils literal notranslate"><span class="pre">NULL</span></code> 指针。但是，下面的实现为什么欠考虑？</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">stack</span><span class="w"> </span><span class="nf">new_stack</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>首先，从创建空栈的角度，该实现没有任何问题。栈抽象类型对象分配在栈内存上，并同时充当底层实现的链表头。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>       <span class="n">栈内存</span>                 <span class="n">堆内存</span>
+
+         <span class="n">s1</span>         <span class="o">-&gt;</span>       <span class="n">node1</span> <span class="o">-&gt;</span> <span class="n">node2</span> <span class="o">-&gt;</span> <span class="n">NULL</span>
+
+</pre></div>
+</div>
+<p>但是，我们上述定义的接口函数，大多数参数都是 <code class="docutils literal notranslate"><span class="pre">stack</span></code> 类型。在 C 语言中，这样的函数调用称为<strong>传值</strong>调用，对数据的修改仅发生在调用栈内部。一旦调用栈收回，数据的修改将会消失，无法对 <code class="docutils literal notranslate"><span class="pre">s1</span></code> 进行持久性修改。</p>
+<p>如果必须采用上述实现，更新对象的接口参数都必须修改为 <code class="docutils literal notranslate"><span class="pre">stack*</span></code>，以<strong>传址</strong>方式进行调用。</p>
+<blockquote>
+<div><p><strong>设计原则</strong></p>
+<p>以指针作参数，对用户的要求较高，特别是对初学者不太友好。</p>
+<p>类似 Java 的设计，隐藏了指针的设计，使用上更为便利。</p>
+</div></blockquote>
+<p>所以，此处我们重新定义构造函数，增加一个嵌套层，将链表头节点放到堆内存上：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">stack</span><span class="w"> </span><span class="nf">new_stack</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">list_t</span><span class="p">));</span>
+<span class="w">    </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>设计原则</strong></p>
+<p>栈内存和堆内存配合使用，在实际项目中非常常见。</p>
+</div></blockquote>
+<p>该操作会在栈内存上创建一个 <code class="docutils literal notranslate"><span class="pre">s1</span></code> 抽象类型对象，底层实现以链表的形式分配在堆内存上，利用指针进行关联。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>       <span class="n">栈内存</span>                 <span class="n">堆内存</span>
+
+         <span class="n">s1</span>         <span class="o">-&gt;</span>        <span class="n">head</span> <span class="o">-&gt;</span> <span class="n">node1</span> <span class="o">-&gt;</span> <span class="n">node2</span> <span class="o">-&gt;</span> <span class="n">NULL</span>
+
+</pre></div>
+</div>
+</section>
+<section id="part-4">
+<h2>Part 4. 通用抽象接口<a class="headerlink" href="#part-4" title="Link to this heading">#</a></h2>
+<p>所谓“通用抽象接口”，就是不依赖底层表示的接口。不管底层表示是数组还是链表，这些接口的实现都不会改变。</p>
+<section id="delete-stack">
+<h3>析构函数 delete_stack<a class="headerlink" href="#delete-stack" title="Link to this heading">#</a></h3>
+<p>按上述设计，如果只是一个空栈，则只需要释放堆上的链表头：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">delete_stack</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>如果不是空栈，则还需要释放底层链表的各个节点，可以在释放链表头之前，先使用清空栈的操作 <code class="docutils literal notranslate"><span class="pre">clear_stack</span></code>：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">delete_stack</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">clear_stack</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="clear-stack">
+<h3>清空栈 clear_stack<a class="headerlink" href="#clear-stack" title="Link to this heading">#</a></h3>
+<p>清空栈就是依次 <code class="docutils literal notranslate"><span class="pre">pop</span></code> 出每个元素，所以可以这样实现：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">clear_stack</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">is_stack_empty</span><span class="p">(</span><span class="n">s</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">pop</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>注意，此处 <code class="docutils literal notranslate"><span class="pre">pop</span></code> 返回值不需要记录，所以为了避免返回值未使用的问题，转换为 <code class="docutils literal notranslate"><span class="pre">void</span></code> 防止编译器警告。</p>
+</section>
+<section id="stack-size">
+<h3>栈大小 stack_size<a class="headerlink" href="#stack-size" title="Link to this heading">#</a></h3>
+<p>判断一个栈是否为空，即判断其元素个数是否为 0：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">bool</span><span class="w"> </span><span class="nf">is_stack_empty</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">stack_size</span><span class="p">(</span><span class="n">s</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>计算一个栈的大小，即元素个数，以链表来实现就是遍历整个链表：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="nf">stack_size</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">node_t</span><span class="o">*</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nb">NULL</span><span class="p">;</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">n</span><span class="o">++</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>当然，更好的设计可以在链表头中添加一个成员变量，记录元素个数。</p>
+<ul class="simple">
+<li><p>可以避免绑定底层表示</p></li>
+<li><p>可以避免遍历造成的性能低下</p></li>
+</ul>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">typedef</span><span class="w"> </span><span class="k">struct</span><span class="w"> </span><span class="nc">stack_t</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">node_t</span><span class="o">*</span><span class="w"> </span><span class="n">start</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">count</span><span class="p">;</span>
+<span class="p">}</span><span class="w"> </span><span class="n">list_t</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">stack_size</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">count</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>注意 <code class="docutils literal notranslate"><span class="pre">pop</span></code> 和 <code class="docutils literal notranslate"><span class="pre">push</span></code> 内部需要对 <code class="docutils literal notranslate"><span class="pre">count</span></code> 成员进行更新。</p>
+</section>
+</section>
+<section id="part-5">
+<h2>Part 5. 非通用接口<a class="headerlink" href="#part-5" title="Link to this heading">#</a></h2>
+<p>与上述通用接口相反，这些接口依赖于底层数据结构。如果后续更换底层表示，那么这些接口都要随之进行修改。</p>
+<section id="push">
+<h3>入栈 push<a class="headerlink" href="#push" title="Link to this heading">#</a></h3>
+<p>入栈操作，在链表表示的情况下，就是向链表头插入一个节点：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">push</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">elem_t</span><span class="w"> </span><span class="n">element</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">node_t</span><span class="o">*</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">node_t</span><span class="p">));</span>
+<span class="w">    </span><span class="n">cp</span><span class="o">-&gt;</span><span class="n">element</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cp</span><span class="o">-&gt;</span><span class="n">link</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span>
+<span class="w">    </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="pop">
+<h3>出栈 pop<a class="headerlink" href="#pop" title="Link to this heading">#</a></h3>
+<p>出栈的抽象定义是移除栈顶的元素，以链表实现时，移除栈顶元素就是移除链表头指向的第一个节点：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="n">elem_t</span><span class="w"> </span><span class="nf">pop</span><span class="p">(</span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_stack_empty</span><span class="p">(</span><span class="n">s</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pop of an empty s&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">node_t</span><span class="o">*</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span>
+<span class="w">    </span><span class="n">elem_t</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="o">-&gt;</span><span class="n">element</span><span class="p">;</span>
+<span class="w">    </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">;</span>
+<span class="w">    </span><span class="n">free</span><span class="p">(</span><span class="n">cp</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>注意，此处避免对空栈进行出栈操作，在执行前需要判断栈是否为空，做好防御性编程。</p>
+</section>
+</section>
+<section id="part-6">
+<h2>Part 6. 调试接口<a class="headerlink" href="#part-6" title="Link to this heading">#</a></h2>
+<p>为了增强栈抽象类型的功能，可以提供一个<strong>公有</strong>的打印所有栈元素的接口，类似 C++ 版 <code class="docutils literal notranslate"><span class="pre">Stack</span></code> 的 <code class="docutils literal notranslate"><span class="pre">toString</span></code> 功能，方便客户验证栈对象的状态。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="w"> </span><span class="nf">print_stack</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Stack: &quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stack_size</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;empty</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">--</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%g&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">get_stack_elem</span><span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">));</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>为了调试的方便，可以设计一个<strong>私有</strong>的 <code class="docutils literal notranslate"><span class="pre">get_stack_elem</span></code> 接口，供开发过程中检查内存的布局情况。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="k">static</span><span class="w"> </span><span class="n">elem_t</span><span class="w"> </span><span class="nf">get_stack_elem</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">stack</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">size</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">size</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="n">stack_size</span><span class="p">(</span><span class="n">s</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Error: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Non-existent stack element&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">node_t</span><span class="o">*</span><span class="w"> </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">s</span><span class="o">-&gt;</span><span class="n">start</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cp</span><span class="o">-&gt;</span><span class="n">link</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">(</span><span class="n">cp</span><span class="o">-&gt;</span><span class="n">element</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>在 C 中，私有性只能通过文件来管理</strong>。在 <code class="docutils literal notranslate"><span class="pre">.c</span></code> 文件中使用 <code class="docutils literal notranslate"><span class="pre">static</span></code> 标记函数，则该函数只能在该 <code class="docutils literal notranslate"><span class="pre">.c</span></code> 文件内使用。</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, <a href='https://www.stickmind.com/' target="_blank">StickMind</a>
+            </div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">设计栈抽象数据类型</a><ul>
+<li><a class="reference internal" href="#part-1">Part 1. 定义栈的抽象类型</a><ul>
+<li><a class="reference internal" href="#id2">编译问题</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-2">Part 2. 定义栈的接口</a></li>
+<li><a class="reference internal" href="#part-3-new-stack">Part 3. 构造函数 new_stack</a></li>
+<li><a class="reference internal" href="#part-4">Part 4. 通用抽象接口</a><ul>
+<li><a class="reference internal" href="#delete-stack">析构函数 delete_stack</a></li>
+<li><a class="reference internal" href="#clear-stack">清空栈 clear_stack</a></li>
+<li><a class="reference internal" href="#stack-size">栈大小 stack_size</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-5">Part 5. 非通用接口</a><ul>
+<li><a class="reference internal" href="#push">入栈 push</a></li>
+<li><a class="reference internal" href="#pop">出栈 pop</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#part-6">Part 6. 调试接口</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=7d86a446"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    </body>
+</html>
