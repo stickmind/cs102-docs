@@ -117,19 +117,19 @@ html_context: Dict[str, Any] = {}
 # html_show_copyright = False
 # html_last_updated_fmt = ""
 
-# FONT_AWESOME_TESTING = False
-# if FONT_AWESOME_TESTING:
-#     html_css_files += [
-#         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css",
-#         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/solid.min.css",
-#         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css",
-#     ]
+FONT_AWESOME_TESTING = False
+if FONT_AWESOME_TESTING:
+    html_css_files += [
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/fontawesome.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/solid.min.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css",
+    ]
 
-#     html_theme_options["footer_icons"] = [
-#         {
-#             "name": "GitHub",
-#             "url": "https://github.com/pradyunsg/furo",
-#             "html": "",
-#             "class": "fa-brands fa-solid fa-github fa-2x",
-#         },
-#     ]
+    html_theme_options["footer_icons"] = [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/pradyunsg/furo",
+            "html": "",
+            "class": "fa-brands fa-solid fa-github fa-2x",
+        },
+    ]
