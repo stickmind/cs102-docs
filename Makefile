@@ -22,4 +22,5 @@ serve:
 	@echo "Build finished. The HTML pages are in $(PUBLISH)."
 
 publish:
-	cd $(PUBLISH) && echo "cs102doc.stickmind.com" > CNAME
+	cd $(PUBLISH) && touch .nojekyll && echo "cs102doc.stickmind.com" > CNAME
+	git add . && git commit -m "update" && git push origin master
