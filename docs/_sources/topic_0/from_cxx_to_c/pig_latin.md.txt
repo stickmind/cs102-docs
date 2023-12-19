@@ -1,6 +1,5 @@
 # Pig Latin
 
-<div class="toc"></div>
 
 本节通过一个简化的 C 程序复习模块化开发和逐步求精的过程。**模块化开发**就是把一个程序分成多个模块的技术，回忆下 CS101 作业 1 中 `soundex` 的处理过程，模块通过一系列函数实现功能拆分。
 
@@ -82,7 +81,7 @@ TranslateLine 需要做的工作大致可以分为 3 步：
 
 可以看作是以下 8 个 `token` 组成：
 
-![token](./assets/token.png)
+![token](./assets/token.png){align=center}
 
 可以看出，除了单词，`token` 还包括一些标点组成的字符，在处理 `token` 时需要进行判断。这里我们假设有一个谓词函数接口 `IsLegalWord` 可以直接使用。
 

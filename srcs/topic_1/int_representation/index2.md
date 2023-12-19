@@ -4,7 +4,7 @@
 
 溢出意味着不连续。
 
-![cant_sleep](https://imgs.xkcd.com/comics/cant_sleep.png)
+![cant_sleep](https://imgs.xkcd.com/comics/cant_sleep.png){align=center}
 
 所谓“整型溢出”，就是这样一种现象，即
 
@@ -16,7 +16,7 @@
 - 对于有符号整型，溢出发生在轮盘的下方
 - 对于无符号整型，溢出发生在轮盘的上方
 
-![overflow](./assets/overflow.png)
+![overflow](./assets/overflow.png){align=center}
 
 C/C++ 常见的数据类型可以表示的数值范围，可以通过导入头文件 `#include <limits.h>` 来查看，参考 [Numeric limits](https://en.cppreference.com/w/c/types/limits)。
 
@@ -84,7 +84,7 @@ printf("value2 = %d, uvalue2 = %u\n", value2, uvalue2);
 
 另一种常见运算是在不同字长的整数之间进行转换，比如从 `short` 转为 `int`，或从 `int` 转为 `long`。
 
-![data-type-size](./assets/data-type-size.png)
+![data-type-size](./assets/data-type-size.png){align=center}
 
 一个常见的运算是在不同字长的整数之间转换，又要保持数值不变。一般来说，从较大的数据类型转向较小的数据类型不太可能；反之，从较小的数据类型转向较大的数据类型比较容易做到。
 

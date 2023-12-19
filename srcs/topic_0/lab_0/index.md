@@ -66,7 +66,7 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 
 在 VS Code 插件市场搜索 `SFTP`，选择安装 Natizyskunk 开发的 `SFTP` 插件，如图所示。
 
-![sftp](./assets/sftp.png)
+![sftp](./assets/sftp.png){align=center}
 
 ## 配置 SFTP 插件
 
@@ -76,7 +76,7 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 - `password`：服务器密码
 - `remotePath`：服务器上需要编辑的项目路径，例如 `/home/xuehao/cs102/lab0/`
 
-![sftp-config](./assets/sftp_config.png)
+![sftp-config](./assets/sftp_config.png){align=center}
 
 ## 使用 SFTP 插件
 
@@ -88,7 +88,7 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 
 配置好后，点击 VS Code 菜单栏 **Help** 选择 **Show All Commands**，或直接按 **F1** 快捷键，在弹出的命令列表中搜索 SFTP。选择 "**SFTP: Download Project**"，随后选择默认保存位置，远程服务器中的项目将会自动下载到本地的初始项目文件夹中。
 
-![sftp-use](./assets/using_sftp.png)
+![sftp-use](./assets/using_sftp.png){align=center}
 
 在本地编辑完文件并保存后，SFTP 插件会自动将更新后的文件同步到远程服务器。编译、测试、调试等任务，可以通过终端 Terminal 在远程服务器上进行。
 

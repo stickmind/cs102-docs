@@ -1,6 +1,5 @@
 # 文件操作
 
-<div class="toc"></div>
 
 Linux 提供了许多命令用于查看文件的内容、创建新文件或空文件、更改文件的时间戳以及移动、删除和重命名文件或目录。这些命令可以用于管理数据和文件，并确保在正确的位置提供正确的数据。在本节中，我们将学习如何管理文件。
 
@@ -31,7 +30,7 @@ touch myfile
 touch -t 08121400 myfile
 ```
 
-![touch](./assets/touch.png)
+![touch](./assets/touch.png){align=center}
 
 ## 文件移动、重命名等
 

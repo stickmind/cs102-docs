@@ -1,7 +1,5 @@
 # 作业 0：使用 Linux 和 C
 
-> _本次作业参考：[CS107, Spring 2020 Assignment 0: Intro to Unix and C](https://web.stanford.edu/class/archive/cs/cs107/cs107.1206/assign0/)_
-
 Linux 的使用和命令行操作需要不断地练习。熟练使用这些工具，才能更好地完成作业练习。但要注意的是，这些内容不需要刻意去记忆，经过一段时间的重复使用，自然可以掌握。
 
 在开始作业之前，确保你已经能够：

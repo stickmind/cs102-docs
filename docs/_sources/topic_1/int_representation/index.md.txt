@@ -1,5 +1,11 @@
 # 整数的表示
 
+```{toctree}
+:hidden:
+
+index2
+```
+
 在计算机中，数字的表示可以大致分为三类，分别是：
 
 - 无符号整型（unsigned integer）：表示正数和 0，例如 $0$，$1$，$2$，……，$255$
@@ -40,7 +46,7 @@ $$0b1111 = 1 * 2^3 + 1 * 2^2 + 1 * 2^1 + 1 * 2^0 = 8 + 4 + 2 + 1 = 15$$
 
 下图通过数字轮盘形象地表示了无符号整型的二进制表示和十进制数字之间的关系，以及无符号整型能够表示的数字范围：
 
-![unsigned_int](./assets/unsigned_int.png)
+![unsigned_int](./assets/unsigned_int.png){align=center}
 
 ## 有符号整型
 
@@ -58,7 +64,7 @@ $$0b1111 = 1 * 2^3 + 1 * 2^2 + 1 * 2^1 + 1 * 2^0 = 8 + 4 + 2 + 1 = 15$$
 
 1s 的补码的缺点是有两个用于表示 0 的不同位模式，造成了不必要的浪费。另外，在进行加法操作时，如果进位超过了总体位数，则需要进行循环进位（end-around carry）。例如，
 
-![end-around-carry](./assets/end-around-carry.png)
+![end-around-carry](./assets/end-around-carry.png){align=center}
 
 目前，1s 的补码表示在数字信号处理领域依然有大量的应用。
 
@@ -70,7 +76,7 @@ $$0b1111 = 1 * 2^3 + 1 * 2^2 + 1 * 2^1 + 1 * 2^0 = 8 + 4 + 2 + 1 = 15$$
 
 下图通过数字轮盘形象地表示了 2s 的补码表示的有符号整型的二进制表示和十进制数字之间的关系，以及有符号整型能够表示的数字范围：
 
-![signed_int](./assets/signed_int.png)
+![signed_int](./assets/signed_int.png){align=center}
 
 2s 的补码表示是基数补码（Radix Complement）的一个应用。2s 的补码定义可以表述为一个 N 位表示的值的补码，是该值相对于 $2^N$ 的补码。
 
@@ -98,7 +104,10 @@ $$0b1111 = 1 * 2^3 + 1 * 2^2 + 1 * 2^1 + 1 * 2^0 = 8 + 4 + 2 + 1 = 15$$
       1101 (-3)         ????  (??)           1111  (-1)
     ```
 
-> **🔔 小技巧** 对于二进制表示的数字，如何快速找到其对应的正/负值？
-> 
-> 从右向左，找到第一个 1，将左侧剩下的位全部反转即可。
-> 例如，+2 的位模式为 00<span style="color:red">1</span>0，那么将第一个 1 左侧所有位反转可以得到 <span style="color:blue">11</span><span style="color:red">1</span>0，即为 -2。
+```{admonition} 小技巧：对于二进制表示的数字，如何快速找到其对应的正/负值？
+:class: tip 
+
+从右向左，找到第一个 1，将左侧剩下的位全部反转即可。
+
+例如，+2 的位模式为 00<span style="color:red">1</span>0，那么将第一个 1 左侧所有位反转可以得到 <span style="color:blue">11</span><span style="color:red">1</span>0，即为 -2。
+```

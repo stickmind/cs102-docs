@@ -72,7 +72,7 @@ sudo systemctl start sshd.service
 
 这里需要先配置端口转发，详细的配置过程，请跟随课堂视频一步步完成。
 
-![port forwarding](./assets/port-forwarding.png)
+![port forwarding](./assets/port-forwarding.png){align=center}
 
 完成端口转发配置后，我们可以使用终端模拟远程登陆：
 

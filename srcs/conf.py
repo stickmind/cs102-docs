@@ -36,17 +36,17 @@ mathjax_path="https://cdn.staticfile.org/mathjax/3.2.2/es5/tex-mml-chtml.min.js"
 # -- Options for extlinks ----------------------------------------------------
 #
 
-extlinks = {
-    "pypi": ("https://pypi.org/project/%s/", "%s"),
-}
+# extlinks = {
+#     "pypi": ("https://pypi.org/project/%s/", "%s"),
+# }
 
 # -- Options for intersphinx -------------------------------------------------
 #
 
-intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
-    "sphinx": ("https://www.sphinx-doc.org/en/master", None),
-}
+# intersphinx_mapping = {
+#     "python": ("https://docs.python.org/3", None),
+#     "sphinx": ("https://www.sphinx-doc.org/en/master", None),
+# }
 
 # -- Options for TODOs -------------------------------------------------------
 #
@@ -106,8 +106,8 @@ html_theme_options: Dict[str, Any] = {
 ANNOUNCING = True
 if ANNOUNCING:
     html_theme_options["announcement"] = (
-        "Please use "
-        "<a href='https://pradyunsg.me/furo/'>the main documentation</a> instead."
+        # "路漫漫其修远兮，吾将上下而求索"
+        "天将降大任于斯人也，必先苦其心志"
     )
 
 # -- Options for theme development -------------------------------------------

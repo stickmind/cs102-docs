@@ -20,11 +20,13 @@
   output = ~a;
   ```
 
-> **辨析** 逻辑运算
->
-> 在 C 语言中，逻辑运算（`||`，`&&`，`!`）很容易和位运算混淆。逻辑运算认为`非 0` 为 `true`，`0` 为 `false`。
->
-> 逻辑运算是按整体数值来计算结果的，并不是在位级别上进行操作；这是区别于位运算最大的地方。
+```{admonition} 辨析：逻辑运算
+:class: tip
+
+在 C 语言中，逻辑运算（`||`，`&&`，`!`）很容易和位运算混淆。逻辑运算认为`非 0` 为 `true`，`0` 为 `false`。
+
+逻辑运算是按整体数值来计算结果的，并不是在位级别上进行操作；这是区别于位运算最大的地方。
+```
 
 ## 移位运算
 
@@ -70,7 +72,7 @@ x >>= k;  // 将 x 向右移动 k 个位（x 改变）
   // 0000 0000 0001 0000 -> 0000 0000 0000 0001
   ```
 
-  ![logical-shift](./assets/logical-shift.png)
+  ![logical-shift](./assets/logical-shift.png){align=center}
 
 - 对于**有符号整型**，高位补充符号位，这种右移操作称为**算术右移**（Arithmetic Right Shift）。
   
@@ -86,7 +88,7 @@ x >>= k;  // 将 x 向右移动 k 个位（x 改变）
   // 1111 1111 1111 0000 -> 1111 1111 1111 1111
   ```
 
-  ![arithmetic-shift](./assets/arithmetic-shift.png)
+  ![arithmetic-shift](./assets/arithmetic-shift.png){align=center}
 
 
 ```{admonition} 陷阱：注意操作符的优先级
