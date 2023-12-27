@@ -1,0 +1,537 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="next" title="实验 5：汇编和运行时栈" href="../lab_5/index.html" /><link rel="prev" title="控制指令" href="../x86-64_asm/control.html" />
+
+    
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+        <title>汇编工具 - CS102 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pied-piper-admonition.css?v=e32e2275" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     天将降大任于斯人也，必先苦其心志 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">CS102 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">CS102 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_0.html">开发环境</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of 开发环境</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/linux_intro/index.html">Linux 介绍</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Linux 介绍</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_on_windows.html">Windows MSYS2 环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_virtual_box.html">Ubuntu 虚拟机</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/command_line/linux_command.html">Linux 命令行</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Linux 命令行</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/basic.html">基本命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/file_operation.html">文件操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/searching.html">文件搜索</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/from_cxx_to_c/from_cxx_to_c.html">从 C++ 到 C</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of 从 C++ 到 C</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/simpio.html">simpio.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/strlib.html">strlib.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/pig_latin.html">Pig Latin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/lab_0/index.html">实验 0：上手 Linux 开发环境</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/assign_0/index.html">作业 0：使用 Linux 和 C</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_1.html">数据的表示</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of 数据的表示</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/bit_byte/index.html">位、字节和进制</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_1/int_representation/index.html">整数的表示</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of 整数的表示</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_1/int_representation/index2.html">整型溢出和转换</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/bit_level_ops/index.html">位运算及其应用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/lab_1/index.html">实验 1. 数据的表示</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/assign_1/index.html">作业 1. 有趣的位</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_2.html">数组和指针</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of 数组和指针</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_2/string/index.html">字符串</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of 字符串</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/string/string.html">字符串表示</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/string/string-h.html">string.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/string/char-star.html">字符串指针</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_2/array_and_pointer/index.html">数组和指针</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of 数组和指针</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/array_and_pointer/star-pointer.html">理解 <code class="docutils literal notranslate"><span class="pre">*p</span></code> 的特殊性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/array_and_pointer/array_and_pointer_ops.html">数组索引和指针运算</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/array_and_pointer/array_and_pointer_mis.html">多维数组和二级指针</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_2/function_paremeters/index.html">函数参数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_2/lab_2/index.html">实验 2. 数组和指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_2/assign_2/index.html">作业 2. C 字符串</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_3.html">栈和堆</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of 栈和堆</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/memory_layout/index.html">内存布局</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/memeory_management/index.html">内存管理</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_3/struct/index.html">结构体</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of 结构体</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_3/struct/stack_adt.html">设计栈抽象数据类型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/lab_3/index.html">实验 3：栈和堆</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/assign_3/index.html">作业 3：有趣的堆</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_4.html">泛型编程</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of 泛型编程</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/void_pointer/index.html">泛型指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/function_pointer/index.html">函数指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/lab_4/index.html">实验 4：泛型和回调</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/assign_4/index.html">作业 4：深入泛型指针</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../topic_5.html">汇编语言</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of 汇编语言</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="../asm_intro/index.html">汇编概述</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of 汇编概述</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../asm_intro/index2.html">程序员视角下的硬件</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../x86-64_asm/index.html">x86-64 指令</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of x86-64 指令</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../x86-64_asm/data_move.html">数据传送指令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../x86-64_asm/arithmetic_and_logic.html">算术与逻辑指令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../x86-64_asm/control.html">控制指令</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">汇编工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lab_5/index.html">实验 5：汇编和运行时栈</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../assign_5/index.html">作业 5：来一点汇编</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>返回顶部</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>汇编工具<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>GDB 是逆向工程不可或缺的工具，熟练使用 GDB 命令也是下一次作业必备的技能。</p>
+<section id="id2">
+<h2>学习目标<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>使用 <code class="docutils literal notranslate"><span class="pre">objdump</span></code> 进行反汇编</p></li>
+<li><p>使用 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 追踪汇编指令</p></li>
+</ul>
+</section>
+<section id="objdump">
+<h2>objdump 反汇编<a class="headerlink" href="#objdump" title="Link to this heading">#</a></h2>
+<p>作为编译过程的一部分，汇编器（assembler）接收汇编代码并将其编码为机器指令形式。反汇编（disassembly）是一个相反的过程，将机器指令转换回便于阅读的汇编指令。<code class="docutils literal notranslate"><span class="pre">objdump</span></code> 就是这样的一个工具，它可以从目标文件（包含机器指令）中挖掘出各种信息，但更常见的用途是用作反汇编程序。一起来尝试一下吧！</p>
+<ul class="simple">
+<li><p>调用 <code class="docutils literal notranslate"><span class="pre">objdump</span> <span class="pre">-d</span></code> 命令可以从目标文件中提取信息，并输出机器指令序列以及等效的汇编指令。从目标文件中提取出的指令称为“死亡列表”（deadlist），这里的“死亡”（dead）形象地描述了这个过程不是针对执行时“活动”（live）的代码进行研究的。使用 <code class="docutils literal notranslate"><span class="pre">make</span></code> 构建 <code class="docutils literal notranslate"><span class="pre">code.c</span></code> 程序，然后使用 <code class="docutils literal notranslate"><span class="pre">objdump</span> <span class="pre">-d</span> <span class="pre">code</span></code> 获取一份“死亡列表”。</p></li>
+<li><p>服务器提供了一个自定义命令 <code class="docutils literal notranslate"><span class="pre">countops</span></code>，可以统计给定目标文件中最常用的汇编指令。尝试执行 <code class="docutils literal notranslate"><span class="pre">countops</span> <span class="pre">code</span></code>，该操作将按操作码统计指令，并报告最多的前 10 个指令。再尝试下 <code class="docutils literal notranslate"><span class="pre">countops</span> <span class="pre">/usr/bin/gcc</span></code> 或其他可执行程序。汇编指令的组合会因程序的不同而有较大差异吗？</p></li>
+</ul>
+<div class="hint admonition">
+<p class="admonition-title">提示</p>
+<p>可以使用 <code class="docutils literal notranslate"><span class="pre">objdump</span> <span class="pre">-d</span> <span class="pre">code</span> <span class="pre">&gt;</span> <span class="pre">myfile.txt</span></code> 命令，保存输出结果。</p>
+<p>汇编中的所有文字值都是十六进制的，这在阅读汇编代码时需要注意。</p>
+</div>
+</section>
+<section id="gdb">
+<h2>GDB 汇编调试<a class="headerlink" href="#gdb" title="Link to this heading">#</a></h2>
+<p>下面介绍一些用于在汇编级别进行调试的 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 命令。</p>
+<section id="id3">
+<h3>显示汇编指令<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>不带参数执行命令 <code class="docutils literal notranslate"><span class="pre">disassemble</span></code> 将打印当前正在执行的函数的反汇编指令。也可以提供可选参数，例如函数名称或代码地址。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">disassemble</span><span class="w"> </span><span class="n">myfn</span>
+<span class="n">Dump</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">assembler</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">myfn</span><span class="o">:</span>
+<span class="w">   </span><span class="mh">0x000000000040051b</span><span class="w"> </span><span class="o">&lt;+</span><span class="mi">0</span><span class="o">&gt;:</span><span class="w"> </span><span class="n">movl</span><span class="w">   </span><span class="n">$0x1</span><span class="p">,</span><span class="mh">-0x20</span><span class="p">(</span><span class="o">%</span><span class="n">rsp</span><span class="p">)</span>
+<span class="w">   </span><span class="mh">0x0000000000400523</span><span class="w"> </span><span class="o">&lt;+</span><span class="mi">8</span><span class="o">&gt;:</span><span class="w"> </span><span class="n">movl</span><span class="w">   </span><span class="n">$0x2</span><span class="p">,</span><span class="mh">-0x1c</span><span class="p">(</span><span class="o">%</span><span class="n">rsp</span><span class="p">)</span>
+<span class="p">...</span>
+</pre></div>
+</div>
+<p>最左列中的十六进制数字是该指令在<strong>内存中的地址</strong>，尖括号中的值是该指令<strong>相对于函数开头的偏移量</strong>。</p>
+</section>
+<section id="id4">
+<h3>设置断点<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<p>你可以指定地址 <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">*address</span></code> 或函数 <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">*myfn+8</span></code> 的偏移量，在特定的汇编指令处设置断点。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="mh">0x400570</span><span class="w">      </span><span class="k">break</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">specified</span><span class="w"> </span><span class="n">address</span>
+<span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">*</span><span class="n">myfn</span><span class="o">+</span><span class="mi">8</span><span class="w">        </span><span class="k">break</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="n">instruction</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="n">bytes</span><span class="w"> </span><span class="n">into</span><span class="w"> </span><span class="n">myfn</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>请注意，后者表示断点位置设置在 <code class="docutils literal notranslate"><span class="pre">main</span></code> 函数偏移量为 8 的指令处，如下所示：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">disassemble</span><span class="w"> </span><span class="n">myfn</span>
+<span class="n">Dump</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">assembler</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">myfn</span><span class="o">:</span>
+<span class="w">   </span><span class="mh">0x000000000040051b</span><span class="w"> </span><span class="o">&lt;+</span><span class="mi">0</span><span class="o">&gt;:</span><span class="w"> </span><span class="n">movl</span><span class="w">   </span><span class="n">$0x1</span><span class="p">,</span><span class="mh">-0x20</span><span class="p">(</span><span class="o">%</span><span class="n">rsp</span><span class="p">)</span>
+<span class="o">=&gt;</span><span class="w"> </span><span class="mh">0x0000000000400523</span><span class="w"> </span><span class="o">&lt;+</span><span class="mi">8</span><span class="o">&gt;:</span><span class="w"> </span><span class="n">movl</span><span class="w">   </span><span class="n">$0x2</span><span class="p">,</span><span class="mh">-0x1c</span><span class="p">(</span><span class="o">%</span><span class="n">rsp</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>如果你不使用 <code class="docutils literal notranslate"><span class="pre">*</span></code> 前缀设置函数断点，则 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 会将其解释为函数名称，而不是特定的汇编指令的地址，所以要特别注意！</p>
+</section>
+<section id="id5">
+<h3>单步指令执行<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>命令 <code class="docutils literal notranslate"><span class="pre">stepi</span></code> 和 <code class="docutils literal notranslate"><span class="pre">nexti</span></code> 允许你单步执行汇编指令，类比源代码级的 <code class="docutils literal notranslate"><span class="pre">step</span></code> 和<code class="docutils literal notranslate"><span class="pre">next</span></code> 命令，可以缩写为 <code class="docutils literal notranslate"><span class="pre">si</span></code> 和 <code class="docutils literal notranslate"><span class="pre">ni</span></code>。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">stepi</span><span class="w">            </span><span class="n">executes</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="n">single</span><span class="w"> </span><span class="n">instruction</span>
+<span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">nexti</span><span class="w">            </span><span class="n">executes</span><span class="w"> </span><span class="n">next</span><span class="w"> </span><span class="n">instruction</span><span class="w"> </span><span class="p">(</span><span class="n">step</span><span class="w"> </span><span class="n">over</span><span class="w"> </span><span class="n">fn</span><span class="w"> </span><span class="n">calls</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3>查看寄存器状态<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p>命令 <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">reg</span></code> 将打印所有整数寄存器。你可以按名称打印或设置寄存器的值。在 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 中，寄存器名称以 <code class="docutils literal notranslate"><span class="pre">$</span></code> 为前缀，而不是通常的 <code class="docutils literal notranslate"><span class="pre">%</span></code>。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="n">reg</span>
+<span class="n">rax</span><span class="w">            </span><span class="mh">0x4005c1</span><span class="w"> </span><span class="mi">4195777</span>
+<span class="n">rbx</span><span class="w">            </span><span class="mh">0x0</span><span class="w">  </span><span class="mi">0</span>
+<span class="p">....</span>
+<span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="n">$rax</span><span class="w">            </span><span class="n">show</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="o">%</span><span class="n">rax</span><span class="w"> </span><span class="k">register</span>
+<span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">set</span><span class="w"> </span><span class="n">$rax</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">9</span><span class="w">      </span><span class="n">change</span><span class="w"> </span><span class="n">current</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="o">%</span><span class="n">rax</span><span class="w"> </span><span class="k">register</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3>文本用户界面<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<p>命令 <code class="docutils literal notranslate"><span class="pre">tui</span></code>（文本用户界面）可以将调试界面分成多个窗口，以便同时查看 C 源代码、汇编指令以及当前寄存器的状态。命令 <code class="docutils literal notranslate"><span class="pre">layout</span> <span class="pre">&lt;argument&gt;</span></code> 也可以启动 <code class="docutils literal notranslate"><span class="pre">tui</span></code> 模式。参数可以指定为 <code class="docutils literal notranslate"><span class="pre">src</span></code>、<code class="docutils literal notranslate"><span class="pre">asm</span></code>、<code class="docutils literal notranslate"><span class="pre">regs</span></code>、<code class="docutils literal notranslate"><span class="pre">split</span></code> 或 <code class="docutils literal notranslate"><span class="pre">next</span></code>。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">layout</span><span class="w"> </span><span class="n">split</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">tui</span></code> 模式非常适合跟踪代码的执行过程，在调试时，可以及时观察代码/寄存器的状态。有时 <code class="docutils literal notranslate"><span class="pre">tui</span></code> 界面可能会显示乱码，此时可以使用命令 <code class="docutils literal notranslate"><span class="pre">refresh</span></code> 尝试恢复，或者使用快捷键 <code class="docutils literal notranslate"><span class="pre">Ctrl-L</span></code>。如果无法恢复，尝试 <code class="docutils literal notranslate"><span class="pre">Ctrl-X</span> <span class="pre">A</span></code> 退出 <code class="docutils literal notranslate"><span class="pre">tui</span></code> 模式，返回到普通的界面。</p>
+</section>
+<section id="id8">
+<h3>检查栈帧<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>以下是之前实验、作业和课程中介绍过的一些命令，一起复习一下：</p>
+<ul class="simple">
+<li><p>使用 <code class="docutils literal notranslate"><span class="pre">backtrace</span></code> 显示从当前函数到 <code class="docutils literal notranslate"><span class="pre">main</span></code> 的所有栈帧。使用参数 <code class="docutils literal notranslate"><span class="pre">N</span></code> 时，<code class="docutils literal notranslate"><span class="pre">backtrace</span> <span class="pre">N</span></code> 仅显示 <code class="docutils literal notranslate"><span class="pre">N</span></code> 个最内部的帧，而 <code class="docutils literal notranslate"><span class="pre">backtrace</span> <span class="pre">-N</span></code> 仅显示 <code class="docutils literal notranslate"><span class="pre">N</span></code> 个最外部的帧。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">up</span></code>、<code class="docutils literal notranslate"><span class="pre">down</span></code> 和 <code class="docutils literal notranslate"><span class="pre">frame</span> <span class="pre">n</span></code> 命令允许你更改选定的帧。这些命令不会更改程序执行的状态（执行仍保持并停止在最顶层帧中的位置），但它们允许你从另一个栈帧检查当前运行时状态。例如，更改为 <code class="docutils literal notranslate"><span class="pre">main</span></code> 栈帧允许打印仅在该范围内可见的变量/参数。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">frame</span></code> 命令可以打印有关当前栈帧的一些信息。<code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">args</span></code> 和 <code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">locals</span></code> 分别提供有关参数和局部变量的信息。</p></li>
+<li><p>你可以使用 <code class="docutils literal notranslate"><span class="pre">x</span></code> 命令操作 <code class="docutils literal notranslate"><span class="pre">$rsp</span></code>，来查看栈上的数据（请注意，<code class="docutils literal notranslate"><span class="pre">g</span></code> 表示一个“字”，即 8 个字节，<code class="docutils literal notranslate"><span class="pre">x</span></code> 表示“十六进制显示”）</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) x/4gx $rsp   // 4 quadwords, in hex, read from top of stack
+</pre></div>
+</div>
+</section>
+<section id="id9">
+<h3>自动显示并打印寄存器值<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">info</span> <span class="pre">reg</span></code> 命令显示所有整数寄存器的当前状态。使用类似 <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">$rax</span></code> 打印单个寄存器值。在 GDB 中，对寄存器的访问是通过 <code class="docutils literal notranslate"><span class="pre">$name</span></code> 格式实现的，而不是课程中讲解的 <code class="docutils literal notranslate"><span class="pre">%name</span></code>。</p>
+<p>寄存器被视为无类型的 8 字节值，当你要求 GDB 打印它时，它会显示十进制整数或十六进制地址。你可以通过在打印命令中添加 <code class="docutils literal notranslate"><span class="pre">/[format]</span></code> 或使用 C 类型转换来指定如何解释该值，例如：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) p $rax
+$1 = 4196128
+(gdb) p/t $rax
+$2 = 10000000000011100100000
+(gdb) p (char*)$rax
+$3 = 0x400720 &quot;Hello, world!\n&quot;
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">display</span></code> 命令可以方便地设置一个表达式，可以在单步执行时重复计算和打印结果。例如，尝试以下命令：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(gdb) display/2gx $rsp     // 2 quadwords, in hex, read from stack top
+(gdb) display/3i $rip      // next 3 assembly instructions to execute
+</pre></div>
+</div>
+<p>键入不带参数的 <code class="docutils literal notranslate"><span class="pre">display</span></code> 可以列出当前设置的所有要显示的表达式，<code class="docutils literal notranslate"><span class="pre">undisplay</span> <span class="pre">X</span></code> 可以取消显示某个表达式 <code class="docutils literal notranslate"><span class="pre">X</span></code>。灵活地使用 <code class="docutils literal notranslate"><span class="pre">display</span></code> 命令可以实现类似 <code class="docutils literal notranslate"><span class="pre">tui</span></code> 界面类似的效果，并且可以乱码的情况。</p>
+</section>
+<section id="id10">
+<h3>设置条件断点<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>可以将断点设置为仅在代码中的某些条件成立时触发。例如，假设你的代码中有以下循环：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">count</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="linenos">2</span><span class="w">   </span><span class="p">...</span>
+<span class="linenos">3</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>如果你想在循环内单步执行代码，那么可能要执行许多次循环条件才能到达要检查的位置。但是，GDB 允许你添加一个可选条件（与 C 语法相同），来指定断点何时停止：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>格式为 <code class="docutils literal notranslate"><span class="pre">[BREAKPOINT]</span> <span class="pre">if</span> <span class="pre">[CONDITION]</span></code>。现在，第 2 行的断点只会在循环的最后一次被命中！你甚至可以在表达式中使用局部变量，如上面的 <code class="docutils literal notranslate"><span class="pre">i</span></code> 和 <code class="docutils literal notranslate"><span class="pre">count</span></code> 所示。尝试看看你还可以使用哪些其他有用的条件。</p>
+</section>
+<section id="id11">
+<h3>定制断点行为<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
+<p>你可以设置一系列命令，以便 GDB 可以在每次到达特定断点时执行。任何有效的 GDB 命令都是可以的——设置栈帧、启用/禁用其他断点、计算 C 表达式、更改寄存器中的值等等。你甚至可以使用断点命令从调试器中临时修补有错误的代码！</p>
+<p>假设第 192 行分配的字节数比需要的少了一个：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="linenos">192</span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">t</span><span class="p">));</span><span class="w">         </span><span class="c1">// oops, supposed to be len + 1</span>
+</pre></div>
+</div>
+<p>首先，我们在第 192 行设置断点。</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="w"> </span><span class="mi">192</span>
+<span class="n">Breakpoint</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="n">at</span><span class="w"> </span><span class="mh">0x400a8d</span><span class="o">:</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">program</span><span class="p">.</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="mf">192.</span>
+</pre></div>
+</div>
+<p>接下来，我们向该断点添加命令，插入正确的分配数量，跳过有问题的代码行并继续执行。我们可以通过 <code class="docutils literal notranslate"><span class="pre">command</span></code> 命令来实现这一任务，该命令会提示我们给最近添加的断点设置一些执行命令。该命令可以持续输入命令，直到我们输入 <code class="docutils literal notranslate"><span class="pre">end</span></code> 结束：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">gdb</span><span class="p">)</span><span class="w"> </span><span class="n">commands</span>
+<span class="n">Type</span><span class="w"> </span><span class="n">commands</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">breakpoint</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">per</span><span class="w"> </span><span class="n">line</span><span class="p">.</span>
+<span class="n">End</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="n">saying</span><span class="w"> </span><span class="n">just</span><span class="w"> </span><span class="s">&quot;end&quot;</span><span class="p">.</span>
+<span class="n">print</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">malloc</span><span class="p">(</span><span class="n">strlen</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">jump</span><span class="w"> </span><span class="mi">193</span>
+<span class="k">continue</span>
+<span class="n">end</span>
+</pre></div>
+</div>
+<p>每次执行到第 192 行时，断点命令都会介入，自动插入正确的分配数，跳过有问题的语句并继续执行。这是一个非常好用的功能，在后续二进制炸弹作业中将非常有用……</p>
+</section>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="../lab_5/index.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>下一页</span>
+                </div>
+                <div class="title">实验 5：汇编和运行时栈</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../x86-64_asm/control.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>上一页</span>
+                </div>
+                
+                <div class="title">控制指令</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, <a href='https://www.stickmind.com/' target="_blank">StickMind</a>
+            </div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            本页目录
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">汇编工具</a><ul>
+<li><a class="reference internal" href="#id2">学习目标</a></li>
+<li><a class="reference internal" href="#objdump">objdump 反汇编</a></li>
+<li><a class="reference internal" href="#gdb">GDB 汇编调试</a><ul>
+<li><a class="reference internal" href="#id3">显示汇编指令</a></li>
+<li><a class="reference internal" href="#id4">设置断点</a></li>
+<li><a class="reference internal" href="#id5">单步指令执行</a></li>
+<li><a class="reference internal" href="#id6">查看寄存器状态</a></li>
+<li><a class="reference internal" href="#id7">文本用户界面</a></li>
+<li><a class="reference internal" href="#id8">检查栈帧</a></li>
+<li><a class="reference internal" href="#id9">自动显示并打印寄存器值</a></li>
+<li><a class="reference internal" href="#id10">设置条件断点</a></li>
+<li><a class="reference internal" href="#id11">定制断点行为</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=7d86a446"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    </body>
+</html>

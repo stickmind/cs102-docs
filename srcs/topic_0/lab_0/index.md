@@ -81,7 +81,7 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 ## 使用 SFTP 插件
 
 ```{admonition} 注意
-:class: note
+:class: attention
 
 参照上一步配置的 `remotePath`，必须先在服务器上提前创建好这些目录，才能进行接下来的操作。
 ```
