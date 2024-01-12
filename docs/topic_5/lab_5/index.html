@@ -158,7 +158,7 @@
   <span class="sidebar-brand-text">CS102 文档</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
-  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -343,7 +343,8 @@
 <section id="id4">
 <h2>任务 2：汇编指令练习<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
 <p>学习 C 到汇编的转换，建议尝试 Compiler Explorer 在线工具，这是一款便利的“交互式编译器”。</p>
-<p>此<a class="reference external" href="https://godbolt.org/z/o831K37hd">链接</a>参照课程和实验中的 <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> 编译器标志，已经预先为你配置好。如果想手动配置自己环境：语言选择 C，编译器版本选择 <code class="docutils literal notranslate"><span class="pre">x86-64</span> <span class="pre">gcc</span> <span class="pre">11.4</span></code> 并输入标志 <code class="docutils literal notranslate"><span class="pre">-Og</span> <span class="pre">-std=gnu99</span></code>。</p>
+<p>此<a class="reference external" href="https://godbolt.org/z/o831K37hd">链接</a>参照课程和实验中的 <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> 编译器标志，已经预先为你配置好。如果想手动配置自己环境：语言选择 C，编译器版本选择 <code class="docutils literal notranslate"><span class="pre">x86-64</span> <span class="pre">gcc</span> <span class="pre">11.4</span></code> 并输入标志 <code class="docutils literal notranslate"><span class="pre">-Og</span> <span class="pre">-std=gnu99</span></code>。如果想得到和服务器上一致的编译结果，可以勾选“Link to binary”和“Demangle identifiers”两个选项。</p>
+<p><img alt="godbolt" class="align-center" src="../../_images/godbolt_asm.png" /></p>
 <p>在 Compiler Explorer 中，你可以输入 C 函数，查看其生成的汇编代码。调整 C 的源代码后，可以观察这些更改如何反映在汇编指令中。你可以在服务器上使用 <code class="docutils literal notranslate"><span class="pre">gcc</span></code> 和 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 进行相同的观察，但 Compiler Explorer 提供了一个方便的测试环境，可以更轻松地完成这些任务。试试看吧！</p>
 <section id="id5">
 <h3>移动和地址模式<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>

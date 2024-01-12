@@ -51,7 +51,9 @@ cp -r /home/cs102-shared/labs/lab5 ~/cs102
 
 学习 C 到汇编的转换，建议尝试 Compiler Explorer 在线工具，这是一款便利的“交互式编译器”。
 
-此[链接](https://godbolt.org/z/o831K37hd)参照课程和实验中的 `Makefile` 编译器标志，已经预先为你配置好。如果想手动配置自己环境：语言选择 C，编译器版本选择 `x86-64 gcc 11.4` 并输入标志 `-Og -std=gnu99`。
+此[链接](https://godbolt.org/z/o831K37hd)参照课程和实验中的 `Makefile` 编译器标志，已经预先为你配置好。如果想手动配置自己环境：语言选择 C，编译器版本选择 `x86-64 gcc 11.4` 并输入标志 `-Og -std=gnu99`。如果想得到和服务器上一致的编译结果，可以勾选“Link to binary”和“Demangle identifiers”两个选项。
+
+![godbolt](./assets/godbolt_asm.png){align=center}
 
 在 Compiler Explorer 中，你可以输入 C 函数，查看其生成的汇编代码。调整 C 的源代码后，可以观察这些更改如何反映在汇编指令中。你可以在服务器上使用 `gcc` 和 `gdb` 进行相同的观察，但 Compiler Explorer 提供了一个方便的测试环境，可以更轻松地完成这些任务。试试看吧！
 

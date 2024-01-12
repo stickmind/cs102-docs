@@ -143,7 +143,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -158,7 +158,7 @@
   <span class="sidebar-brand-text">CS102 文档</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
-  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
@@ -287,7 +287,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -296,6 +296,372 @@
           <section class="tex2jax_ignore mathjax_ignore" id="id1">
 <h1>控制指令<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
 <p>程序指令可以一条接着一条顺序执行，也可以通过条件测试改变执行的顺序。在 x86-64 汇编中，执行顺序的控制有两种实现方式：无条件跳转和有条件跳转。</p>
+<section id="id2">
+<h2>认识硬件：程序计数器<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>程序计数器（program counter），通常简称 PC 寄存器，在 x86-64 汇编中使用 <code class="docutils literal notranslate"><span class="pre">%rip</span></code> 表示。</p>
+<p>在计算机中，这是一个特别用途的寄存器，<strong>用于记录下一条即将执行的指令的内存地址</strong>。一旦处理器完成了当前指令的执行，PC 寄存器就会将保存的指令地址交给处理器继续执行，同时更新为下一条指令的地址。默认情况下，PC 寄存器会更新到紧接着的下一条指令，类似 <code class="docutils literal notranslate"><span class="pre">i++</span></code> 的操作。</p>
+<p>既然 PC 寄存器记录了 CPU 接下来处理的指令，那么如果有方法可以<strong>修改 PC 寄存器</strong>的值，我们就能够改变 CPU 执行的指令顺序。</p>
+<p>在 x86-64 汇编中，通过跳转指令可以改变机器指令执行的顺序，使程序切换到一个全新的位置。</p>
+</section>
+<section id="id3">
+<h2>无条件跳转<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<p>无条件跳转指令 <code class="docutils literal notranslate"><span class="pre">jmp</span></code> 可以<em>直接</em>进行跳转，跳转目的地常用 target 或指令地址指定；也可以<em>间接</em>跳转，跳转目的地通过寄存器或内存位置读取。</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>指令</p></th>
+<th class="head text-center"><p>条件</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">jmp</span> <span class="pre">Label</span></code></p></td>
+<td class="text-center"><p>1</p></td>
+<td><p>Direct jump</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jmp</span> <span class="pre">*Operand</span></code></p></td>
+<td class="text-center"><p>1</p></td>
+<td><p>Indirect jump</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>如下汇编示例中，当执行到指令 <code class="docutils literal notranslate"><span class="pre">jmp</span> <span class="pre">.L1</span></code> 处，程序会跳过 <code class="docutils literal notranslate"><span class="pre">movq</span></code> 指令，而从 <code class="docutils literal notranslate"><span class="pre">.L1</span></code> 标记的 <code class="docutils literal notranslate"><span class="pre">popq</span></code> 开始执行。</p>
+<div class="highlight-asm notranslate"><div class="highlight"><pre><span></span><span class="w">	</span><span class="nf">movq</span><span class="w"> </span><span class="no">$0</span><span class="p">,</span><span class="nv">%rax</span>
+<span class="w">	</span><span class="nf">jmp</span><span class="w"> </span><span class="no">.L1</span><span class="w">             </span><span class="c1"># 跳转到 .L1</span>
+<span class="w">	</span><span class="nf">movq</span><span class="w"> </span><span class="p">(</span><span class="nv">%rax</span><span class="p">),</span><span class="nv">%rdx</span><span class="w">    </span><span class="c1"># 跳过</span>
+<span class="nl">.L1:</span>
+<span class="w">	</span><span class="nf">popq</span><span class="w"> </span><span class="nv">%rdx</span><span class="w">           </span><span class="c1"># 跳转目标</span>
+</pre></div>
+</div>
+<p>常见的写法还有如下几种：</p>
+<div class="highlight-asm notranslate"><div class="highlight"><pre><span></span><span class="nf">jmp</span><span class="w"> </span><span class="mh">404f8</span> <span class="p">&lt;</span><span class="no">loop</span><span class="p">+</span><span class="mi">0xb</span><span class="p">&gt;</span><span class="w">  </span><span class="c1"># 跳转目标为 0x404f8</span>
+<span class="nf">jmp</span><span class="w"> </span><span class="p">*</span><span class="nv">%rax</span><span class="w">             </span><span class="c1"># 跳转目标为 %rax 的值</span>
+<span class="nf">jmp</span><span class="w"> </span><span class="p">*(</span><span class="nv">%rax</span><span class="p">)</span><span class="w">           </span><span class="c1"># %rax 的值定义了内存位置，跳转目标为内存的值</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2>认识硬件：状态寄存器<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>在 C 中，有 <code class="docutils literal notranslate"><span class="pre">if</span></code>、<code class="docutils literal notranslate"><span class="pre">else</span></code>、<code class="docutils literal notranslate"><span class="pre">while</span></code> 等控制语句，这些语句会根据条件的真假来确定执行的语句块。</p>
+<p>在 x86-64 汇编中，也提供了类似跳转指令，可以根据条件状态来确定跳转的目标。汇编层面的条件判断需要硬件来支持，这类硬件称为<strong>状态寄存器</strong>（condition code），其状态反映了最近的算术或逻辑操作的属性。</p>
+<p>常见的条件码有如下几种：</p>
+<ul class="simple">
+<li><p><strong>CF</strong>（Carry flag）最近的操作发生了溢出（无符号整型）</p></li>
+<li><p><strong>ZF</strong>（Zero flag）最近的操作生成了 0 值</p></li>
+<li><p><strong>SF</strong>（Sign flag）最近的操作生成了负值（有符号整型）</p></li>
+<li><p><strong>OF</strong>（Overflow flag）最近的操作发生了溢出（有符号整型）</p></li>
+</ul>
+</section>
+<section id="id5">
+<h2>比较和测试<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cmp</span></code> 指令和 <code class="docutils literal notranslate"><span class="pre">sub</span></code> 指令行为类似，<code class="docutils literal notranslate"><span class="pre">test</span></code> 指令和 <code class="docutils literal notranslate"><span class="pre">and</span></code> 指令行为类似。这两个指令都不保存结果，仅影响条件码。</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>指令</p></th>
+<th class="head"><p>基于</p></th>
+<th class="head text-center"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmp</span> <span class="pre">S1,</span> <span class="pre">S2</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S2</span> <span class="pre">-</span> <span class="pre">S1</span></code></p></td>
+<td class="text-center"><p>Compare</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">S1,</span> <span class="pre">S2</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">S1</span> <span class="pre">&amp;</span> <span class="pre">S2</span></code></p></td>
+<td class="text-center"><p>Test</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">test</span></code> 指令可以利用前面介绍的位运算，实现一些典型的用途：</p>
+<ul class="simple">
+<li><p>判断正负：两个操作数一致，可以检查该操作数是正数还是负数</p></li>
+<li><p>判断位模式：其中一个操作数使用掩码，可以测试某些位的状态</p></li>
+</ul>
+<p>根据字节长度的变体形式，和 <code class="docutils literal notranslate"><span class="pre">mov</span></code> 指令相同，例如 <code class="docutils literal notranslate"><span class="pre">cmpq</span></code> 表示 8 字节，<code class="docutils literal notranslate"><span class="pre">testl</span></code> 表示 4 字节。</p>
+</section>
+<section id="id6">
+<h2>条件跳转<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<p>条件跳转指令会根据条件码的某种状态或组合，决定是否跳转到标签所指的位置。以 <code class="docutils literal notranslate"><span class="pre">je</span></code> 指令为例，即“当相等时跳转”，当 <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></code> 时，得到 <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">=</span> <span class="pre">0</span></code>，此时 <code class="docutils literal notranslate"><span class="pre">ZF</span></code> 置 1 就表示相等。</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>指令</p></th>
+<th class="head"><p>同类指令</p></th>
+<th class="head text-center"><p>条件</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">je</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jz</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">ZF</span></code></p></td>
+<td><p>Equal / zero</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jne</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jnz</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~ZF</span></code></p></td>
+<td><p>Not equal / not zero</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">js</span> <span class="pre">target</span></code></p></td>
+<td><p></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">SF</span></code></p></td>
+<td><p>Negative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jns</span> <span class="pre">target</span></code></p></td>
+<td><p></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~SF</span></code></p></td>
+<td><p>Nonnegative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">jg</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jnle</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~(SF</span> <span class="pre">^</span> <span class="pre">OF)</span> <span class="pre">&amp;</span> <span class="pre">~ZF</span></code></p></td>
+<td><p>Greater (signed &gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jge</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jnl</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~(SF</span> <span class="pre">^</span> <span class="pre">OF)</span></code></p></td>
+<td><p>Greater or equal (signed &gt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">jl</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jnge</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">SF</span> <span class="pre">^</span> <span class="pre">OF</span></code></p></td>
+<td><p>Less (signed &lt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jle</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jng</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">(SF</span> <span class="pre">^</span> <span class="pre">OF)</span> <span class="pre">|</span> <span class="pre">ZF</span></code></p></td>
+<td><p>Less or equal (signed &lt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ja</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jnbe</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~CF</span> <span class="pre">&amp;</span> <span class="pre">~ZF</span></code></p></td>
+<td><p>Above (unsigned &gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jae</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jnb</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~CF</span></code></p></td>
+<td><p>Above or equal (unsigned &gt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">jb</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jnae</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">CF</span></code></p></td>
+<td><p>Below (unsigned &lt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">jbe</span> <span class="pre">target</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">jna</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">CF</span> <span class="pre">|</span> <span class="pre">ZF</span></code></p></td>
+<td><p>Below or equal (unsigned &lt;=)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>在汇编层面，通常需要两条指令配合才能决定执行的位置，常见的模式如下：</p>
+<ul class="simple">
+<li><p>一条指令设置条件状态，例如 <code class="docutils literal notranslate"><span class="pre">cmp</span> <span class="pre">S1,</span> <span class="pre">S2</span></code></p></li>
+<li><p>一条指令基于条件跳转，例如 <code class="docutils literal notranslate"><span class="pre">je</span> <span class="pre">[target]</span></code></p></li>
+</ul>
+<div class="highlight-asm notranslate"><div class="highlight"><pre><span></span><span class="nf">cmp</span><span class="w"> </span><span class="no">$2</span><span class="p">,</span><span class="w"> </span><span class="nv">%edi</span>
+<span class="nf">jg</span><span class="w"> </span><span class="p">[</span><span class="no">target</span><span class="p">]</span>
+
+<span class="nf">cmp</span><span class="w"> </span><span class="no">$1</span><span class="p">,</span><span class="w"> </span><span class="nv">%edi</span>
+<span class="nf">jle</span><span class="w"> </span><span class="p">[</span><span class="no">target</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="tip admonition">
+<p class="admonition-title">小节</p>
+<ul class="simple">
+<li><p>对于大多数算术运算，不管是有符号还是无符号，在位级别的处理上完全一致。也就是说，机器代码不会将数据值和数据类型进行关联。</p></li>
+<li><p>少数计算，例如逻辑右移和算术右移，会提供不同的指令分别处理有符号和无符号数值。</p></li>
+<li><p>可以发现，跳转指令处理有符号和无符号是通过 <code class="docutils literal notranslate"><span class="pre">SF</span> <span class="pre">^</span> <span class="pre">OF</span></code> 和 <code class="docutils literal notranslate"><span class="pre">CF</span></code> 的几种组合决定。</p></li>
+</ul>
+</div>
+</section>
+<section id="id7">
+<h2>设置字节<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<p>设置指令可以根据条件码的某种组合，将一个字节设置为 0 或 1。</p>
+<ul class="simple">
+<li><p>其变种的名称/跳转条件和条件跳转指令一致</p></li>
+<li><p>操作数 D 可以是单字节寄存器，也可以是单字节内存地址</p></li>
+</ul>
+<p>当操作数为寄存器时，不会影响其他字节。但通常情况，该指令会搭配 <code class="docutils literal notranslate"><span class="pre">movzbl</span></code> 指令进行零扩展操作，所以这种情况下，高字节会被设置为零。</p>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>指令</p></th>
+<th class="head"><p>同类指令</p></th>
+<th class="head text-center"><p>效果</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sete</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setz</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">ZF</span></code></p></td>
+<td><p>Equal / zero</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setne</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setnz</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">~ZF</span></code></p></td>
+<td><p>Not equal / not zero</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sets</span> <span class="pre">D</span></code></p></td>
+<td><p></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">SF</span></code></p></td>
+<td><p>Negative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setns</span> <span class="pre">D</span></code></p></td>
+<td><p></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">~SF</span></code></p></td>
+<td><p>Nonnegative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setg</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setnle</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">~(SF</span> <span class="pre">^</span> <span class="pre">OF)</span> <span class="pre">&amp;</span> <span class="pre">~ZF</span></code></p></td>
+<td><p>Greater (signed &gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setge</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setnl</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">~(SF</span> <span class="pre">^</span> <span class="pre">OF)</span></code></p></td>
+<td><p>Greater or equal (signed &gt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setl</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setnge</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">SF</span> <span class="pre">^</span> <span class="pre">OF</span></code></p></td>
+<td><p>Less (signed &lt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setle</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setng</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">(SF</span> <span class="pre">^</span> <span class="pre">OF)</span> <span class="pre">|</span> <span class="pre">ZF</span></code></p></td>
+<td><p>Less or equal (signed &lt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">seta</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setnbe</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">~CF</span> <span class="pre">&amp;</span> <span class="pre">~ZF</span></code></p></td>
+<td><p>Above (unsigned &gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setae</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setnb</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">~CF</span></code></p></td>
+<td><p>Above or equal (unsigned &gt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">setb</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setnae</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">CF</span></code></p></td>
+<td><p>Below (unsigned &lt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">setbe</span> <span class="pre">D</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">setna</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">D</span> <span class="pre">←</span> <span class="pre">CF</span> <span class="pre">|</span> <span class="pre">ZF</span></code></p></td>
+<td><p>Below or equal (unsigned &lt;=)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="id8">
+<h2>条件数据移动<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">cmov</span></code> 指令可以根据条件码状态，有选择地将源 <span class="math notranslate nohighlight">\(S\)</span> 中的数据移动到目的地 <span class="math notranslate nohighlight">\(R\)</span> 中。</p>
+<ul class="simple">
+<li><p>根据条件状态，寄存器 <span class="math notranslate nohighlight">\(D\)</span> 要么改变，要么保持不变</p></li>
+<li><p>这里的 <span class="math notranslate nohighlight">\(S\)</span> 可以是内存地址或寄存器，而 <span class="math notranslate nohighlight">\(D\)</span> 只能是寄存器</p></li>
+<li><p>对于一些简单的条件判断表达式，执行效率相比较跳转指令更快</p></li>
+</ul>
+<div class="table-wrapper colwidths-auto docutils container">
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>指令</p></th>
+<th class="head"><p>同类指令</p></th>
+<th class="head text-center"><p>条件</p></th>
+<th class="head"><p>说明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmove</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovz</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">ZF</span></code></p></td>
+<td><p>Equal / zero</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmovne</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovnz</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~ZF</span></code></p></td>
+<td><p>Not equal / not zero</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmovs</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">SF</span></code></p></td>
+<td><p>Negative</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmovns</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~SF</span></code></p></td>
+<td><p>Nonnegative</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmovg</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovnle</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~(SF</span> <span class="pre">^</span> <span class="pre">OF)</span> <span class="pre">&amp;</span> <span class="pre">~ZF</span></code></p></td>
+<td><p>Greater (signed &gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmovge</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovnl</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~(SF</span> <span class="pre">^</span> <span class="pre">OF)</span></code></p></td>
+<td><p>Greater or equal (signed &gt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmovl</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovnge</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">SF</span> <span class="pre">^</span> <span class="pre">OF</span></code></p></td>
+<td><p>Less (signed &lt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmovle</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovng</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">(SF</span> <span class="pre">^</span> <span class="pre">OF)</span> <span class="pre">|</span> <span class="pre">ZF</span></code></p></td>
+<td><p>Less or equal (signed &lt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmova</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovnbe</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~CF</span> <span class="pre">&amp;</span> <span class="pre">~ZF</span></code></p></td>
+<td><p>Above (unsigned &gt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmovae</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovnb</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">~CF</span></code></p></td>
+<td><p>Above or equal (unsigned &gt;=)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">cmovb</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovnae</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">CF</span></code></p></td>
+<td><p>Below (unsigned &lt;)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cmovbe</span> <span class="pre">S,</span> <span class="pre">R</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">cmovna</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">CF</span> <span class="pre">|</span> <span class="pre">ZF</span></code></p></td>
+<td><p>Below or equal (unsigned &lt;=)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>现代处理器采用<strong>分支预测</strong>进行条件跳转，以保证流水线包含连续指令。但实际上，现代处理器的预测率只能达到 50%，一旦预测失败，就会浪费大约 15 到 30 个时钟周期。</p>
+<p>对于一些较为简单的条件表达式，例如 <code class="docutils literal notranslate"><span class="pre">expr</span> <span class="pre">?</span> <span class="pre">then</span> <span class="pre">:</span> <span class="pre">else</span></code>，可以使用条件数据移动指令，替代条件跳转指令，以避免预测失败造成严重的性能下降。</p>
+<div class="tip admonition">
+<p class="admonition-title">状态寄存器的读写</p>
+<p><strong>设置条件码</strong>：除了 <code class="docutils literal notranslate"><span class="pre">leaq</span></code> 外，大部分算术逻辑操作都会影响条件码的状态，一些特殊的规则如下：</p>
+<ul class="simple">
+<li><p>逻辑操作，CF 和 OF 都会置 0</p></li>
+<li><p>移位操作，CF 设置为最后一个被移出的位，OF 置 0</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inc</span></code> 和 <code class="docutils literal notranslate"><span class="pre">dec</span></code> 操作，ZF 和 OF 都会置 1，CF 保持不变</p></li>
+</ul>
+<p>还有两类指令只改变条件码，不改变任何其他寄存器。例如，<code class="docutils literal notranslate"><span class="pre">cmp</span></code> 和 <code class="docutils literal notranslate"><span class="pre">sub</span></code> 行为类似，<code class="docutils literal notranslate"><span class="pre">test</span></code> 和 <code class="docutils literal notranslate"><span class="pre">and</span></code> 行为类似，区别是 <code class="docutils literal notranslate"><span class="pre">cmp/test</span></code> 只设置条件码，而 <code class="docutils literal notranslate"><span class="pre">sub/and</span></code> 会将结果写回目的寄存器。</p>
+<p><strong>访问条件码</strong>：条件码通常不会直接读取，常用的方法有三种：</p>
+<ul class="simple">
+<li><p>根据条件码的某种组合，将一个字节设置为 0 或 1，例如 <code class="docutils literal notranslate"><span class="pre">set</span></code> 指令</p></li>
+<li><p>根据条件码状态，跳转到程序的某个其他部分，例如 <code class="docutils literal notranslate"><span class="pre">je</span></code> 指令</p></li>
+<li><p>有条件地传送数据，例如 <code class="docutils literal notranslate"><span class="pre">cmov</span></code> 指令</p></li>
+</ul>
+</div>
+</section>
 </section>
 
         </article>
@@ -337,8 +703,33 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            本页目录
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">控制指令</a><ul>
+<li><a class="reference internal" href="#id2">认识硬件：程序计数器</a></li>
+<li><a class="reference internal" href="#id3">无条件跳转</a></li>
+<li><a class="reference internal" href="#id4">认识硬件：状态寄存器</a></li>
+<li><a class="reference internal" href="#id5">比较和测试</a></li>
+<li><a class="reference internal" href="#id6">条件跳转</a></li>
+<li><a class="reference internal" href="#id7">设置字节</a></li>
+<li><a class="reference internal" href="#id8">条件数据移动</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
@@ -351,5 +742,7 @@
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/tabs.js?v=3ee01567"></script>
     <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.staticfile.org/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
     </body>
 </html>
