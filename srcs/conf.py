@@ -106,8 +106,8 @@ html_theme_options: Dict[str, Any] = {
 ANNOUNCING = True
 if ANNOUNCING:
     html_theme_options["announcement"] = (
-        # "路漫漫其修远兮，吾将上下而求索"
-        "天将降大任于斯人也，必先苦其心志"
+        "路漫漫其修远兮，吾将上下而求索"
+        #"天将降大任于斯人也，必先苦其心志"
     )
 
 # -- Options for theme development -------------------------------------------

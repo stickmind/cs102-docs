@@ -6,6 +6,7 @@
 
 topic_5/asm_intro/index
 topic_5/x86-64_asm/index
+topic_5/procedure/index
 topic_5/asm_tools/index
 topic_5/lab_5/index
 topic_5/assign_5/index
@@ -15,7 +16,6 @@ topic_5/assign_5/index
 
 - 程序是如何真实地转换成计算机可以识别的指令并执行的，从而帮助我们编写更好的程序
 - 学习程序的逆向工程，并在汇编级别开发程序
-
 
 C 是更高级别的编程语言，可以在不同机器之间移植，但并不是用于执行程序的抽象级别。了解程序是如何编译并执行的以及计算机体系结构，是编写高性能程序的关键（例如，代码行数少并不一定更好）。
 

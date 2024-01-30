@@ -3,6 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXAUTO    = sphinx-autobuild
+BUILD		  = sphinx-build
 SRC           = srcs
 PUBLISH       = docs
 
@@ -15,17 +16,22 @@ help:
 clean:
 	-rm -rf $(PUBLISH)
 
-serve:
-	$(SPHINXAUTO) $(SRC) $(PUBLISH)
+build:
+	$(BUILD) $(SRC) $(PUBLISH)
 	
 	@echo
 	@echo "Build finished. The HTML pages are in $(PUBLISH)."
 
+serve:
+	$(SPHINXAUTO) $(SRC) $(PUBLISH)
+	
 publish:
+	$(SPHINXAUTO) $(SRC) $(PUBLISH)
 	cd $(PUBLISH) && touch .nojekyll && echo "cs102doc.stickmind.com" > CNAME
 	git add . && git commit -m "update" && git push origin main
 
 fix:
+	make clean && make build
 	cd $(PUBLISH) && touch .nojekyll && echo "cs102doc.stickmind.com" > CNAME
 	git add . && git commit --amend --no-edit && git push origin main --force
 
