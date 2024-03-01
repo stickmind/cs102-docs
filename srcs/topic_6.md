@@ -5,6 +5,7 @@
 :hidden:
 
 topic_6/lab_6/index
+topic_6/final_project/index
 ```
 
 本阶段主要目标是深入学习 `malloc/realloc/free` 的工作过程，尝试实现一个自己的版本，并对整个学期的内容作一个总结：

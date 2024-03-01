@@ -18,6 +18,7 @@ clean:
 
 build:
 	$(BUILD) $(SRC) $(PUBLISH)
+	cd $(PUBLISH) && touch .nojekyll && echo "cs102doc.stickmind.com" > CNAME
 	
 	@echo
 	@echo "Build finished. The HTML pages are in $(PUBLISH)."
@@ -26,12 +27,10 @@ serve:
 	$(SPHINXAUTO) $(SRC) $(PUBLISH)
 	
 publish:
-	$(SPHINXAUTO) $(SRC) $(PUBLISH)
-	cd $(PUBLISH) && touch .nojekyll && echo "cs102doc.stickmind.com" > CNAME
+	make clean && make build
 	git add . && git commit -m "update" && git push origin main
 
 fix:
 	make clean && make build
-	cd $(PUBLISH) && touch .nojekyll && echo "cs102doc.stickmind.com" > CNAME
 	git add . && git commit --amend --no-edit && git push origin main --force
 

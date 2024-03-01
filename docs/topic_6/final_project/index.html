@@ -1,0 +1,639 @@
+<!doctype html>
+<html class="no-js" lang="zh-CN" data-content_root="../../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" /><link rel="prev" title="实验 6. 优化和分析" href="../lab_6/index.html" />
+
+    
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+        <title>作业 6：堆分配器 - CS102 文档</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/pied-piper-admonition.css?v=e32e2275" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<div class="announcement">
+  <aside class="announcement-content">
+     路漫漫其修远兮，吾将上下而求索 
+  </aside>
+</div>
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../index.html"><div class="brand">CS102 文档</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
+  
+  
+  <span class="sidebar-brand-text">CS102 文档</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
+  <input class="sidebar-search" placeholder="搜索" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_0.html">开发环境</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of 开发环境</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/linux_intro/index.html">Linux 介绍</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Linux 介绍</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_on_windows.html">Windows MSYS2 环境</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/linux_intro/linux_virtual_box.html">Ubuntu 虚拟机</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/command_line/linux_command.html">Linux 命令行</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Linux 命令行</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/basic.html">基本命令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/file_operation.html">文件操作</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/command_line/searching.html">文件搜索</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_0/from_cxx_to_c/from_cxx_to_c.html">从 C++ 到 C</a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" role="switch" type="checkbox"/><label for="toctree-checkbox-4"><div class="visually-hidden">Toggle navigation of 从 C++ 到 C</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/simpio.html">simpio.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/strlib.html">strlib.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_0/from_cxx_to_c/pig_latin.html">Pig Latin</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/lab_0/index.html">实验 0：上手 Linux 开发环境</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_0/assign_0/index.html">作业 0：使用 Linux 和 C</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_1.html">数据的表示</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle navigation of 数据的表示</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/bit_byte/index.html">位、字节和进制</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_1/int_representation/index.html">整数的表示</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle navigation of 整数的表示</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_1/int_representation/index2.html">整型溢出和转换</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/bit_level_ops/index.html">位运算及其应用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/lab_1/index.html">实验 1. 数据的表示</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_1/assign_1/index.html">作业 1. 有趣的位</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_2.html">数组和指针</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle navigation of 数组和指针</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_2/string/index.html">字符串</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle navigation of 字符串</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/string/string.html">字符串表示</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/string/string-h.html">string.h</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/string/char-star.html">字符串指针</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_2/array_and_pointer/index.html">数组和指针</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle navigation of 数组和指针</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/array_and_pointer/star-pointer.html">理解 <code class="docutils literal notranslate"><span class="pre">*p</span></code> 的特殊性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/array_and_pointer/array_and_pointer_ops.html">数组索引和指针运算</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_2/array_and_pointer/array_and_pointer_mis.html">多维数组和二级指针</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_2/function_paremeters/index.html">函数参数</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_2/lab_2/index.html">实验 2. 数组和指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_2/assign_2/index.html">作业 2. C 字符串</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_3.html">栈和堆</a><input class="toctree-checkbox" id="toctree-checkbox-10" name="toctree-checkbox-10" role="switch" type="checkbox"/><label for="toctree-checkbox-10"><div class="visually-hidden">Toggle navigation of 栈和堆</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/memory_layout/index.html">内存布局</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/memeory_management/index.html">内存管理</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_3/struct/index.html">结构体</a><input class="toctree-checkbox" id="toctree-checkbox-11" name="toctree-checkbox-11" role="switch" type="checkbox"/><label for="toctree-checkbox-11"><div class="visually-hidden">Toggle navigation of 结构体</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_3/struct/stack_adt.html">设计栈抽象数据类型</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/lab_3/index.html">实验 3：栈和堆</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_3/assign_3/index.html">作业 3：有趣的堆</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_4.html">泛型编程</a><input class="toctree-checkbox" id="toctree-checkbox-12" name="toctree-checkbox-12" role="switch" type="checkbox"/><label for="toctree-checkbox-12"><div class="visually-hidden">Toggle navigation of 泛型编程</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/void_pointer/index.html">泛型指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/function_pointer/index.html">函数指针</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/lab_4/index.html">实验 4：泛型和回调</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_4/assign_4/index.html">作业 4：深入泛型指针</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../topic_5.html">汇编语言</a><input class="toctree-checkbox" id="toctree-checkbox-13" name="toctree-checkbox-13" role="switch" type="checkbox"/><label for="toctree-checkbox-13"><div class="visually-hidden">Toggle navigation of 汇编语言</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_5/asm_intro/index.html">汇编概述</a><input class="toctree-checkbox" id="toctree-checkbox-14" name="toctree-checkbox-14" role="switch" type="checkbox"/><label for="toctree-checkbox-14"><div class="visually-hidden">Toggle navigation of 汇编概述</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_5/asm_intro/index2.html">程序员视角下的硬件</a></li>
+</ul>
+</li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../topic_5/x86-64_asm/index.html">x86-64 指令</a><input class="toctree-checkbox" id="toctree-checkbox-15" name="toctree-checkbox-15" role="switch" type="checkbox"/><label for="toctree-checkbox-15"><div class="visually-hidden">Toggle navigation of x86-64 指令</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_5/x86-64_asm/data_move.html">数据传送指令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_5/x86-64_asm/arithmetic_and_logic.html">算术与逻辑指令</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../topic_5/x86-64_asm/control.html">控制指令</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_5/procedure/index.html">过程：函数调用</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_5/asm_tools/index.html">汇编工具</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_5/lab_5/index.html">实验 5：汇编和运行时栈</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../topic_5/assign_5/index.html">作业 5：来一点汇编</a></li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="../../topic_6.html">堆分配器</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-16" name="toctree-checkbox-16" role="switch" type="checkbox"/><label for="toctree-checkbox-16"><div class="visually-hidden">Toggle navigation of 堆分配器</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lab_6/index.html">实验 6. 优化和分析</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">作业 6：堆分配器</a></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>返回顶部</span>
+        </a>
+        <div class="content-icon-container">
+          
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto"><use href="#svg-sun-half"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main">
+          <section class="tex2jax_ignore mathjax_ignore" id="id1">
+<h1>作业 6：堆分配器<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<p>迄今为止，我们都以用户身份使用堆内存管理函数，现在是时候深入了解并实现自己版本的 <code class="docutils literal notranslate"><span class="pre">malloc</span></code>、<code class="docutils literal notranslate"><span class="pre">realloc</span></code> 和 <code class="docutils literal notranslate"><span class="pre">free</span></code> 了！堆分配器的主要目标是：</p>
+<ul class="simple">
+<li><p>正确性：为格式正确的任意“请求组合”提供服务</p></li>
+<li><p>高利用率：内存使用上满足更紧凑、更低开销、重复利用等要求</p></li>
+<li><p>快速：快速响应请求</p></li>
+</ul>
+<p>有多种设计可以满足这些目标，但需要考虑各种权衡。正确性固然重要，但紧接着的优先事项是：节省空间还是提高速度？示例中的 Bump Allocator 可以非常快地响应请求，但却会持续地消耗内存。另一种设计是，堆分配器可以积极的回收内存，通过打包压缩来降低内存空间占用，但这样的处理又会降低请求响应的速度。工业界的实现是在不牺牲任何一个目标的情况下，找到一个最佳的平衡点。</p>
+<p>在本次作业中，你将实现两种不同的堆分配器：<strong>隐式空闲链表分配器</strong>（implicit free list allocator）和<strong>显式空闲链表分配器</strong>（explicit free list allocator）。本次作业为你提供了足够的自由度，让你可以尝试并决定如何实现这些分配器，体会不同的设计策略以平衡各种利弊——除了作业中列出的要求之外，你还可以自由地选择你认为合适的策略来设计分配器！完成本次作业将帮助你：</p>
+<ul class="simple">
+<li><p>了解实现堆分配器的复杂性以及工程上的权衡</p></li>
+<li><p>进一步提高你的指针使用和代码调试技能</p></li>
+<li><p>分析你的代码，找出效率低下的部分并尽力优化</p></li>
+<li><p>总结本课程中掌握的所有技能和知识点</p></li>
+</ul>
+<p>为了帮助你评估学习进度，对于每个作业/实验，我们罗列了一些要点，并提供了一些思考问题。在完成作业后，可以使用这些问题进行自我检查。如果你不能很好地回答这些问题，那么还需要进一步努力。</p>
+<ul class="simple">
+<li><p>提高 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 效率的主要挑战是什么？什么原因让 <code class="docutils literal notranslate"><span class="pre">free</span></code> 操作如此高效？</p></li>
+<li><p>解释<strong>内部碎片</strong>（internal fragmentation）和<strong>外部碎片</strong>（external fragmentation）之间的区别。哪个对利用率的威胁更大？</p></li>
+<li><p>如果你已经创建了高效的 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 和 <code class="docutils literal notranslate"><span class="pre">free</span></code>，那么基于这些接口实现的 <code class="docutils literal notranslate"><span class="pre">realloc</span></code> 是否也一样高效？</p></li>
+<li><p><strong>吞吐量</strong>（throughput）和<strong>利用率</strong>（utilization）常常被视为是对立的。提高吞吐量会以降低利用率为代价，反之亦然。是否有一些方法可以让二者达到平衡？</p></li>
+</ul>
+<section id="id2">
+<h2>初始项目<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>你的个人用户目录下应该已经有 <code class="docutils literal notranslate"><span class="pre">cs102</span></code> 这个文件夹了，通过下面的命令拷贝初始代码到该目录中：</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>-r<span class="w"> </span>/home/cs102-shared/assignments/final-project<span class="w"> </span>~/cs102
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2>重要提示<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>阅读教科书</strong>。 在 CSAPP 第 9.9 节包含了堆分配器的背景知识，包括示例代码。你可以查看这些代码，但请注意，其结构框架与本次作业不兼容，代码可读性也较差，还使用了风格较差的预处理器宏定义。你可以以此为起点，尝试获取一些灵感，然后编写自己的实现。</p></li>
+<li><p><strong>遵循设计-编码-测试工作流</strong>。尝试先勾勒出你的设计，思考各个重要的因素，然后再分解为一个个可管理的小块代码片来实现，并在每次实现完成后进行彻底的测试。建议你先阅读初始项目代码，了解测试工具的工作原理，然后尝试完成隐式空闲链表分配器的实现。最后，再将所有内容移植到高吞吐量、高利用率的显式空闲链表分配器中——你应该基于隐式空闲链表分配器的代码来实现显式空闲链表分配器，这样做可以先保证通过所有测试，然后再将注意力集中到添加显式空闲链表分配器功能上。</p></li>
+<li><p><strong>同时运行多个测试脚本</strong>。你可以使用正则表达式来指定多个测试文件，并与测试工具一起运行。例如，你可以使用 <code class="docutils literal notranslate"><span class="pre">samples/example*.script</span></code>（注意星号）作为文件名，运行 <code class="docutils literal notranslate"><span class="pre">samples</span></code> 文件夹中以 <code class="docutils literal notranslate"><span class="pre">example</span></code> 开头的所有测试文件。</p></li>
+<li><p><strong>编写辅助函数</strong>。对于一些重复操作的任务，例如在有效负载指针与其标头之间来回移动或从一个标头前进到下一个标头。尽管这些任务可能只是单行语句，但它们却是复杂、密集的指针操作。将这些任务封装成独立的辅助函数，只需要正确编写一次就可以放心调用！</p></li>
+<li><p><strong>警惕指针类型</strong>。如果你知道指针的类型，请使用其特定类型来声明它。仅当指针类型未知或可能变化时才使用 <code class="docutils literal notranslate"><span class="pre">void*</span></code>。另外，不要将特定类型的指针声明为 <code class="docutils literal notranslate"><span class="pre">void*</span></code>，这会误导读者和编译器。</p></li>
+<li><p><strong>善用结构体和 <code class="docutils literal notranslate"><span class="pre">typedef</span></code></strong>。在适当的时候，使用结构体封装数据可以让代码更清晰、更易于阅读。另外，涉及到结构体类型转换时，也可以更轻松地操作数据。此外，你还可以使用 <code class="docutils literal notranslate"><span class="pre">typedef</span></code> 利用现有类型来自定义合适的类型名称，例如，<code class="docutils literal notranslate"><span class="pre">typedef</span> <span class="pre">int</span> <span class="pre">custom_type;</span></code> 声明了一个 <code class="docutils literal notranslate"><span class="pre">custom_type</span></code> 类型，但本质上仍然是 <code class="docutils literal notranslate"><span class="pre">int</span></code>。</p></li>
+<li><p><strong>警惕类型转换</strong>。不能随意地进行类型转换。类型转换会破坏类型系统，编译器不再提供相关的警告信息。在转换之前，请考虑一下：为什么需要这个转换？如果不转换，会发生什么？有没有更安全的方式来实现我的目的？如何尽可能地利用类型系统？</p></li>
+<li><p><strong>逐步求精</strong>。实现 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 或 <code class="docutils literal notranslate"><span class="pre">realloc</span></code> 需要编写大量代码，超长的代码行可能会让你感到非常难受。可以尝试将其分解为一个个小任务：寻找区块、更新内部状态等。</p></li>
+<li><p><strong>有意义的命名</strong>。为字段和函数名选择一个好名称。例如 <code class="docutils literal notranslate"><span class="pre">size_t</span></code> 之类的名称意义不够明确，无法让你区分它是有效负载大小还是总块大小（包括标头），也无法区分它使用的是什么单位（字节还是字？）。牢记，始终使用描述性变量名称！</p></li>
+<li><p><strong>避免混用有符号/无符号类型</strong>。标准 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 接口将其参数视为 <code class="docutils literal notranslate"><span class="pre">size_t</span></code>，这是一个无符号长整型 <code class="docutils literal notranslate"><span class="pre">unsigned</span> <span class="pre">long</span></code>。混用有符号和无符号类型以及对位宽的疏忽，都可能会导致意想不到的错误，因此要深思熟虑并保持一致。</p></li>
+<li><p><strong>代码效率</strong>。本课程不强调效率，而是更多地关注算法、降低代码重复、有效分解任务等。当以效率为目标时，优先事项将会有所变化。所以理想情况是，尽可能精简你的代码，这也是代码整洁和高质量的表现。只有当效率相对更重要，并且没有更优雅的方式实现时，我们再考虑牺牲代码质量来换取效率。</p></li>
+</ul>
+</section>
+<section id="id4">
+<h2>任务 1：测试工具<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<p>为了让堆分配器通过其测试，我们需要一个良好的测试方案。项目中的 <code class="docutils literal notranslate"><span class="pre">test_harness.c</span></code> 测试工具和分配器脚本可以提供帮助！</p>
+<section id="id5">
+<h3>分配器脚本<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<p>分配器脚本包含一系列按照紧凑文本格式编写的请求。三种请求类型分别是 <code class="docutils literal notranslate"><span class="pre">a</span></code>（分配）<code class="docutils literal notranslate"><span class="pre">r</span></code>（重新分配）和 <code class="docutils literal notranslate"><span class="pre">f</span></code>（释放）。每个请求都有一个 ID 号，用于后续重新分配或释放时进行引用。编写格式如下所示：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="nb">id</span><span class="o">-</span><span class="n">number</span> <span class="n">size</span>
+<span class="n">r</span> <span class="nb">id</span><span class="o">-</span><span class="n">number</span> <span class="n">size</span>
+<span class="n">f</span> <span class="nb">id</span><span class="o">-</span><span class="n">number</span>
+</pre></div>
+</div>
+<p>以下是一个脚本示例：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">a</span> <span class="mi">0</span> <span class="mi">24</span>
+<span class="n">a</span> <span class="mi">1</span> <span class="mi">100</span>
+<span class="n">f</span> <span class="mi">0</span>
+<span class="n">r</span> <span class="mi">1</span> <span class="mi">300</span>
+<span class="n">f</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>上述脚本将被转换为如下的函数调用：</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mymalloc</span><span class="p">(</span><span class="mi">24</span><span class="p">);</span>
+<span class="kt">void</span><span class="o">*</span><span class="w"> </span><span class="n">ptr1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mymalloc</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+<span class="n">myfree</span><span class="p">(</span><span class="n">ptr0</span><span class="p">);</span>
+<span class="n">ptr1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">myrealloc</span><span class="p">(</span><span class="n">ptr1</span><span class="p">,</span><span class="w"> </span><span class="mi">300</span><span class="p">);</span>
+<span class="n">myfree</span><span class="p">(</span><span class="n">ptr1</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>我们在 <code class="docutils literal notranslate"><span class="pre">samples</span></code> 文件夹中提供了多种不同的测试脚本，可以根据命名来推断其测试目的：</p>
+<ul class="simple">
+<li><p><strong>example</strong> 脚本用于测试分配器的特定功能。这些脚本非常小（少于 10 个请求），易于跟踪，对于早期开发和调试特别有用。但也因为太小，所以无法用于性能测试。</p></li>
+<li><p><strong>pattern</strong> 脚本是根据各种模式模板机械构建的（例如 500 个 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 后跟 500 个 <code class="docutils literal notranslate"><span class="pre">free</span></code> 或 500 个 <code class="docutils literal notranslate"><span class="pre">malloc/free</span></code> 配对）。这些脚本可以生成足够多的请求（大约 1000 个），尽管是人为生成的，但它们对于性能测试来说非常有用。</p></li>
+<li><p><strong>trace</strong> 脚本包含了实际程序的工作负载。这些脚本很大（&gt; 5,000 个请求），表现出了不同的行为，并且对于全面正确性测试很有用。它们还提供了你可能期望的“真实环境中”的性能测试。</p></li>
+</ul>
+<p>最后，强烈鼓励你创建自己的脚本！</p>
+</section>
+<section id="id6">
+<h3>测试工具<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">test_harness.c</span></code> 是作业提供的测试程序，可以检查这些脚本文件的正确性。该工具将解析脚本文件并将其转换为请求。执行脚本时，它会尝试验证每个请求是否成功响应。使用 <code class="docutils literal notranslate"><span class="pre">make</span></code> 进行编译时，构建工具将创建该程序的 3 个不同编译版本进行测试，每一个版本对应不同类型的堆分配器：<code class="docutils literal notranslate"><span class="pre">test_bump</span></code>、<code class="docutils literal notranslate"><span class="pre">test_implicit</span></code> 和 <code class="docutils literal notranslate"><span class="pre">test_explicit</span></code>。你可以指定一个或多个脚本文件作为 <code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 的命令行参数，它将运行每个脚本文件并进行评估。</p>
+<p>仔细阅读 <code class="docutils literal notranslate"><span class="pre">test_harness.c</span></code>，了解其运行方式，以便充分利用它。不需要深入研究文件末尾的解析脚本文件的代码，但需要你仔细检查文件开头的部分，了解其如何执行每个脚本并检查其正确性。</p>
+<p>以下问题可以用来验证自己的理解：</p>
+<ul class="simple">
+<li><p>当发出 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 请求时，<code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 会执行哪些检查来验证该请求是否得到了正确响应？对 <code class="docutils literal notranslate"><span class="pre">free</span></code> 执行了哪些检查？<code class="docutils literal notranslate"><span class="pre">realloc</span></code> 又如何？</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 如何验证内存块之间没有发生重叠？</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 向已分配内存块的有效负载字节写入了什么值？写入有效负载的目的是什么？</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 如何计算分配器的平均利用率？</p></li>
+<li><p>除了执行自有检查，该工具还会调用 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code>，从外部验证分配器的正确性。<code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 是你将在每个分配器中编写的一个函数，它会扫描内部堆数据结构（稍后将详细介绍如何实现这一点）。<code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 什么时候调用 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code>？当 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 返回 <code class="docutils literal notranslate"><span class="pre">false</span></code> 时，<code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 如何响应？哪个命令行标志可以让 <code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 跳过 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 的调用？</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 在执行每个脚本之前调用分配器的 <code class="docutils literal notranslate"><span class="pre">myinit</span></code> 函数。该函数会将分配器的记录清理干净并重新开始。<strong>如果 <code class="docutils literal notranslate"><span class="pre">myinit</span></code> 没有完成其工作，上一个脚本留下的垃圾值可能会引起错误</strong>。在堆分配器中实现 <code class="docutils literal notranslate"><span class="pre">myinit</span></code> 时，请记住这一点！</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">myinit</span></code> 的参数是堆内存区段的边界。尝试在 GDB 下运行 <code class="docutils literal notranslate"><span class="pre">test_bump</span></code> 并打印出这些边界。堆内存从什么地址开始？堆内存大小是多少？记住这些值，你将在该区域看到很多活动。</p></li>
+<li><p>调试 <code class="docutils literal notranslate"><span class="pre">test_harness</span></code> 时，可以在执行测试脚本中的某个特定行号时设置断点。如何使用“条件断点”来实现这个操作？哪一行是触发条件断点的合适位置？</p></li>
+</ul>
+<p>希望你可以很好地理解此代码的运行方式，以便在测试分配器时可以有效地使用它。</p>
+</section>
+</section>
+<section id="bump">
+<h2>任务 2：探究 Bump 分配器<a class="headerlink" href="#bump" title="Link to this heading">#</a></h2>
+<p>文件 <code class="docutils literal notranslate"><span class="pre">bump.c</span></code> 包含 Bump 分配器的实现。我们在课程中讨论了这一策略，这是最简单的实现方法之一；其速度非常快，但内存利用率非常低。我们提供的实现并不适合所有边界情况，而且不会执行所有必需的错误检查，提供该实现的目的是为了让你了解如何实现堆分配器。以下是一些实验，用于观察其性能：</p>
+<ul>
+<li><p>阅读 <code class="docutils literal notranslate"><span class="pre">bump.c</span></code> 的代码。反汇编 <code class="docutils literal notranslate"><span class="pre">mymalloc</span></code> 和 <code class="docutils literal notranslate"><span class="pre">myfree</span></code> 函数并计算其汇编指令的数量。这是静态指令计数。</p></li>
+<li><p>打开分配器脚本 <code class="docutils literal notranslate"><span class="pre">samples/pattern-repeat.script</span></code> 并仔细阅读其内容。该脚本发出 1000 个请求：500 次重复调用 <code class="docutils literal notranslate"><span class="pre">mymalloc</span></code>，然后调用 <code class="docutils literal notranslate"><span class="pre">myfree</span></code>。</p></li>
+<li><p>使用实验 6 中讨论的 Callgrind 分析器，检查运行此脚本时，Bump 分配器的动态指令计数：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">valgrind</span> <span class="o">--</span><span class="n">tool</span><span class="o">=</span><span class="n">callgrind</span> <span class="o">--</span><span class="n">toggle</span><span class="o">-</span><span class="n">collect</span><span class="o">=</span><span class="n">mymalloc</span> <span class="o">--</span><span class="n">toggle</span><span class="o">-</span><span class="n">collect</span><span class="o">=</span><span class="n">myrealloc</span> <span class="o">--</span><span class="n">toggle</span><span class="o">-</span><span class="n">collect</span><span class="o">=</span><span class="n">myfree</span> <span class="o">./</span><span class="n">test_bump</span> <span class="n">samples</span><span class="o">/</span><span class="n">pattern</span><span class="o">-</span><span class="n">repeat</span><span class="o">.</span><span class="n">script</span>
+</pre></div>
+</div>
+<p>静态指令数和动态指令数之间有什么关系？它们之间是如何匹配的？</p>
+</li>
+<li><p>在此输出文件上运行实验 6 中提到的注释器，查看标有指令计数的 C 源代码。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">callgrind_annotate</span> <span class="o">--</span><span class="n">auto</span><span class="o">=</span><span class="n">yes</span> <span class="n">callgrind</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Bump 分配器代码的任何部分都没有成为特定的“热点”，所有操作都非常精简。</p>
+</li>
+<li><p>查看 <code class="docutils literal notranslate"><span class="pre">myrealloc</span></code> 的 C 代码及其生成的汇编指令。分配器脚本 <code class="docutils literal notranslate"><span class="pre">samples/pattern-realloc.script</span></code> 发出 1000 个请求：100 个对 <code class="docutils literal notranslate"><span class="pre">mymalloc</span></code> 的调用和 900 个对 <code class="docutils literal notranslate"><span class="pre">myrealloc</span></code> 的调用。对此脚本执行相同的分析器和注释器。该注释将报告一个明确的“热点”，需要大量的指令。这么耗时的操作是什么？是什么让它如此低效？</p></li>
+<li><p>Bump 分配器没有每个内存块的开销，但无法回收内存意味着它的利用率将会很糟。分析上述脚本时，测试工具报告的利用率是多少？</p></li>
+<li><p>Bump 分配器包含一个 <code class="docutils literal notranslate"><span class="pre">dump_heap</span></code> 函数，该函数以文本形式打印出堆的内容。但是这个函数没有在代码中的任何地方被调用，那么它的作用是什么？我们可以使用 <code class="docutils literal notranslate"><span class="pre">call</span></code> 命令在 <code class="docutils literal notranslate"><span class="pre">gdb</span></code> 中暂停时调用函数。这意味着，如果我们在调试时，想要打印出堆内容的文本表示，我们可以使用 <code class="docutils literal notranslate"><span class="pre">dump_heap</span></code> 函数轻松地做到这一点。查看后续的 <code class="docutils literal notranslate"><span class="pre">dump_heap</span></code> 部分，了解更多信息以及如何将其添加到自己的分配器中。</p></li>
+</ul>
+<p>Bump 分配器只需少量指令就可以为 <code class="docutils literal notranslate"><span class="pre">malloc/free</span></code> 提供服务，但其利用率极低。在你自己的分配器中，你的目标是在利用率和速度方面取得良好的平衡，而不是为了某一个而牺牲另一个。</p>
+</section>
+<section id="id7">
+<h2>任务 3：实现自己的分配器<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<p>现在轮到你了！在本次作业中，你将实现自己的隐式/显式空闲链表分配器。</p>
+<section id="id8">
+<h3>一般要求<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
+<p>以下要求适用于两个分配器：</p>
+<ul class="simple">
+<li><p>该接口应与标准 <code class="docutils literal notranslate"><span class="pre">libc</span></code> 分配器匹配。仔细阅读 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 手册，了解分配器必须遵守的正确请求格式是什么以及所需的处理。请注意，有一些奇怪的问题需要考虑，例如 <code class="docutils literal notranslate"><span class="pre">malloc(0)</span></code> 等）。忽略手册“注释”部分中的深奥细节。</p></li>
+<li><p>对于如何处理不当请求没有要求。例如，客户重新分配栈地址、释放已释放的指针、超出分配块的末尾或其他错误的使用方式，你的响应可以是任意内容，包括崩溃或破坏堆内存。我们不会对这些情况进行测试。</p></li>
+<li><p>分配的块必须与请求的大小至少一样大，但不需要恰好是该大小。你的设计必须满足的最大内存大小请求在 <code class="docutils literal notranslate"><span class="pre">allocator.h</span></code> 中指定为常量。如果请求的块大于最大值，则分配器可以返回 <code class="docutils literal notranslate"><span class="pre">NULL</span></code>。不应假设该常量的值不会超过 <code class="docutils literal notranslate"><span class="pre">size_t</span></code> 的最大值。每个分配的块必须对齐到一个地址，该地址是 <code class="docutils literal notranslate"><span class="pre">ALIGNMENT</span></code> 常量的倍数，也在 <code class="docutils literal notranslate"><span class="pre">allocator.h</span></code> 中定义。可以假设该值为 8，并且你的代码仅适用于 8 对齐。但是你仍应使用该常量而不是对该值进行硬编码。这种对齐方式仅适用于返回给客户端的有效负载，而不适用于内部堆数据（例如标头）。你可以选择将较小请求四舍五入到某个最小值。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">myinit</span></code> 的工作是正确初始化分配器的状态。如果初始化成功，则返回 <code class="docutils literal notranslate"><span class="pre">true</span></code>；如果参数无效/分配器无法初始化，则返回 <code class="docutils literal notranslate"><span class="pre">false</span></code>。对于传入的参数，可以假设堆起始地址是与 <code class="docutils literal notranslate"><span class="pre">ALIGNMENT</span></code> 常量对齐的非 <code class="docutils literal notranslate"><span class="pre">NULL</span></code> 值，并且堆大小是 <code class="docutils literal notranslate"><span class="pre">ALIGNMENT</span></code> 的倍数。不应假设有关参数的任何其他内容，例如堆大小足以供堆分配器使用。</p></li>
+<li><p>你的分配器不可以调用任何内存管理函数。我们所说的“内存管理”特指那些分配或释放内存的操作，因此不会调用 <code class="docutils literal notranslate"><span class="pre">malloc</span></code>、<code class="docutils literal notranslate"><span class="pre">realloc</span></code>、<code class="docutils literal notranslate"><span class="pre">free</span></code>、<code class="docutils literal notranslate"><span class="pre">calloc</span></code>、<code class="docutils literal notranslate"><span class="pre">sbrk</span></code>、<code class="docutils literal notranslate"><span class="pre">brk</span></code>、<code class="docutils literal notranslate"><span class="pre">mmap</span></code> 或相关变体。使用其他库函数也可以，例如 <code class="docutils literal notranslate"><span class="pre">memmove</span></code> 和 <code class="docutils literal notranslate"><span class="pre">memset</span></code> 可以使用，因为它们不分配或释放内存。</p></li>
+<li><p>你的分配器可能会使用少量静态全局数据，最多 500 字节。此限制规定堆内存的大部分内务处理必须存储在堆段本身内。</p></li>
+<li><p>测试工具将寻找各种外部可见的问题（未对齐/重叠/外部段的块、未能保留有效负载数据等）；你的分配器在任何示例脚本上都不应出现操作或执行错误。</p></li>
+<li><p>你必须实现一个 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 函数，该函数可以彻底检查堆内部数据结构和状态，并确认是否发现问题。</p></li>
+</ul>
+</section>
+<section id="validate-heap">
+<h3><code class="docutils literal notranslate"><span class="pre">validate_heap</span></code><a class="headerlink" href="#validate-heap" title="Link to this heading">#</a></h3>
+<p>测试工具定期调用 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 来检查问题。该函数可以可靠地区分有效和无效的堆配置，并查明堆发生故障的确切时刻。有了该工具，你就不必尝试手动追溯损坏的堆是如何发生的，而是直接跟踪上下文中的关键调用，准确地观察错误是如何以及何时发生的。实现 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 时，不要重复测试工具已经为你执行的检查，而是通过检查堆的内部一致性来增强它们。你应该在实现每个分配器时，编写 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 的实现——不应该在实现分配器后才开始添加它！随着堆数据结构变得复杂，<code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 也会变得更加复杂。</p>
+</section>
+<section id="dump-heap">
+<h3><code class="docutils literal notranslate"><span class="pre">dump_heap</span></code><a class="headerlink" href="#dump-heap" title="Link to this heading">#</a></h3>
+<p>函数 <code class="docutils literal notranslate"><span class="pre">dump_heap</span></code> 不会在代码中的任何地方调用，但在 GDB 内调试时，如果你想打印堆的当前内容，可以调用这个函数。与 <code class="docutils literal notranslate"><span class="pre">validate_heap</span></code> 一样，它是一个非常有用的工具，可以收集信息、区分有效和无效的堆配置以及查明堆发生故障的确切位置。Bump 分配器提供了一个实现示例——对于你的分配器，你应该实现自己的 <code class="docutils literal notranslate"><span class="pre">dump_heap</span></code> 函数，例如遍历堆并打印出每个块相关的信息（例如，标头中的信息，显式空闲链表分配器中下一个/上一个空闲块，等等）。这可以向你展示堆结构的整体情况、哪些块是已分配的、哪些块是空闲的、不同块的大小等。</p>
+</section>
+<section id="id9">
+<h3>隐式空闲链表分配器<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<p>现在你已准备好实现你的第一个堆分配器设计。你的隐式空闲链表分配器必须支持的特定功能是：</p>
+<ul class="simple">
+<li><p>跟踪块的标头信息，例如大小、状态（使用中或空闲）——你必须采用 8 字节大小的标头设计，使用 3 个最低有效位来存储状态</p></li>
+<li><p>如果可能的话，回收空闲块并重新用于后续 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 请求的</p></li>
+<li><p>通过隐式空闲链表（即逐块遍历）在堆中搜索空闲块的一种 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 实现</p></li>
+</ul>
+<p>你的隐式空闲链表分配器不需要实现以下要求：</p>
+<ul class="simple">
+<li><p>实现任何已释放块的合并（显式分配器将执行此操作）</p></li>
+<li><p>支持就地重新分配（显式分配器将执行此操作）；对于重新分配请求，你可以重新选择另一个位置的内存来满足请求</p></li>
+<li><p>使用页脚/标尾（footer），如 CSAPP 中介绍的那样</p></li>
+<li><p>内存不足时调整堆大小。如果内存不足，你的分配器应该向客户端报告这一点。</p></li>
+</ul>
+<p>该分配器的执行速度不会很快，但回收空闲节点的特性，肯定会比 Bump 分配器的利用率更高。</p>
+<p>以上要求是你需要实现的最低规范。我们有意未指定更多细节，因为我们将这些设计决策留给你；这意味着你可以选择是否使用 <code class="docutils literal notranslate"><span class="pre">first-fit/next-fit/best-fit/worst-fit</span></code> 等进行搜索。尝试这些不同设计，来观察各种效果是很有趣的。对于作业来说，任何合理的选择和设计都是可以接受的。鼓励你进行更多的尝试！</p>
+</section>
+<section id="id10">
+<h3>显式空闲链表分配器<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<p>基于隐式版本中学到的知识，使用文件 <code class="docutils literal notranslate"><span class="pre">explicit.c</span></code> 开发一个高性能分配器，该分配器采用显式空闲链表实现，并支持合并、就地重新分配。</p>
+<p>你的显式空闲链表分配器必须支持的特定功能：</p>
+<ul class="simple">
+<li><p>隐式版本实现的块标头以及回收释放的节点（你可以从隐式版本中拷贝）</p></li>
+<li><p>显式空闲链表采用双向链表管理，每个空闲块有效负载的前 16 个字节作为下一个/上一个指针
+请注意，不应扩大标头来添加指针字段。由于该链表仅包含空闲块，因此经济的方法是将这些指针存储在其他未使用的有效负载中。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">malloc</span></code> 应搜索显式链表的空闲块</p></li>
+<li><p>如果释放的块也是空闲的，则应与其右侧的相邻块合并。合并必须在 <span class="math notranslate nohighlight">\(O(1)\)</span> 时间内完成。你应该在释放块时执行此合并。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">realloc</span></code> 应尽可能调整块的大小，例如，客户端正在调整大小，或者其右侧的相邻块是空闲的并且可以被吸收。<strong>即使无法就地重新分配，你仍然应该尽可能多地吸收相邻的空闲块，直到可以就地重新分配为止，或者直到不能继续吸收而必须在其他地方重新分配为止</strong>。</p></li>
+</ul>
+<p>你的显式空闲链表分配器非必须（但可以选择）的功能：</p>
+<ul class="simple">
+<li><p>将空闲块合并到左侧相邻块或以其他方式合并到左侧相邻块</p></li>
+<li><p>多次合并以获得一个空闲块。换句话说，如果你释放一个块并且其右侧有多个空闲块，则只需为前两个块合并一次。但是，对于 <code class="docutils literal notranslate"><span class="pre">realloc</span></code>，你应该支持就地重新分配，此时可能需要吸收其右侧的多个块。</p></li>
+<li><p>内存不足时调整堆大小。如果内存不足，你的分配器应该向客户端报告这一点。</p></li>
+</ul>
+<p>与隐式版本相比，该分配器应该会进一步提高利用率并大幅提高速度。你最终将得到一个非常灵活的分配器，而且利用率也很高——这是一个令人印象深刻的成就！</p>
+<p>以上要求是你需要实现的最低规范。我们有意未指定更多细节，因为我们将这些设计决策留给你；这意味着你可以选择是否使用 <code class="docutils literal notranslate"><span class="pre">first-fit/next-fit/best-fit/worst-fit</span></code> 等进行搜索。尝试这些不同设计，来观察各种效果是很有趣的。对于作业来说，任何合理的选择和设计都是可以接受的。鼓励你进行更多的尝试！</p>
+</section>
+</section>
+<section id="id11">
+<h2>性能和效率<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<p>注意，不要在此作业中使用 Valgrind memtool，该工具仅适用于标准分配器。但是，你可以在 Valgrind callgrind（分析工具）下运行测试工具来测量指令计数。</p>
+<section id="id12">
+<h3>利用率<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<p>你可以通过更有效地将内存块打包到堆段中，来实现更高的利用率，从而容纳更多的有效负载数据并相应地减少开销/碎片。测试工具可以计算单个脚本的利用率，以及一组脚本的平均利用率。单个脚本的利用率 = 峰值有效负载 ÷ 用于容纳该有效负载的总段空间。利用率范围从 0% 到 100%。具体的利用率取决于每个脚本；某个糟糕的脚本利用率可能会下降近 30%，而另一个脚本可能会达到近乎完美的 95%。如果整体平均利用率 &gt;50%，那么你的实现就很好！</p>
+</section>
+<section id="id13">
+<h3>指令计数<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<p>分配器的另一个重要目标是快速响应请求。 Callgrind 正是达成这一目标的工具——可以用来计算执行的指令数量，越低越好。</p>
+<p>要获取分配器的测量结果，请在 Callgrind 下运行测试工具，并使用特殊参数将结果限制为分配器函数，如下所示：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">valgrind</span> <span class="o">--</span><span class="n">tool</span><span class="o">=</span><span class="n">callgrind</span> <span class="o">--</span><span class="n">toggle</span><span class="o">-</span><span class="n">collect</span><span class="o">=</span><span class="n">mymalloc</span> <span class="o">--</span><span class="n">toggle</span><span class="o">-</span><span class="n">collect</span><span class="o">=</span><span class="n">myrealloc</span> <span class="o">--</span><span class="n">toggle</span><span class="o">-</span><span class="n">collect</span><span class="o">=</span><span class="n">myfree</span> <span class="o">./</span><span class="n">test_bump</span> <span class="n">samples</span><span class="o">/</span><span class="n">pattern</span><span class="o">-</span><span class="n">mixed</span><span class="o">.</span><span class="n">script</span>
+</pre></div>
+</div>
+<p>上面的命令在指定脚本上运行 Bump 分配器，并要求 Callgrind 计算 <code class="docutils literal notranslate"><span class="pre">my-</span></code> 开头的三个函数中执行的指令总数。它将生成一个 <code class="docutils literal notranslate"><span class="pre">callgrind.out.pid</span></code>（<code class="docutils literal notranslate"><span class="pre">pid</span></code> 是进程号）文件。搭配 <code class="docutils literal notranslate"><span class="pre">callgrind_annotate</span></code> 一起使用，可以获取每个函数和每行代码完成的工作的详细信息。</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">callgrind_annotate</span> <span class="o">--</span><span class="n">auto</span><span class="o">=</span><span class="n">yes</span> <span class="n">callgrind</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">pid</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h3>性能<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
+<p>对不同分配器的性能有哪些期望？</p>
+<p><strong>Bump 分配器</strong>。由于其处理请求的工作没有变化，<code class="docutils literal notranslate"><span class="pre">malloc</span></code> 和 <code class="docutils literal notranslate"><span class="pre">free</span></code> 的时间复杂度都是 <code class="docutils literal notranslate"><span class="pre">O(1)</span></code>。使用 <code class="docutils literal notranslate"><span class="pre">-O0</span></code> 编译，处理每个 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 请求，大约需要 35 条指令（使用 <code class="docutils literal notranslate"><span class="pre">-O2</span></code> 编译时，指令减少到不到 10 条）。这些计数表明其速度快得难以企及，但其快速响应的后果是利用率极低。</p>
+<p><strong>隐式空闲链表分配器</strong>。为了响应 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 请求，该分配器需要搜索隐式链表。指令计数将根据堆的使用情况以及空闲块的位置而变化。在最好的情况下（立即找到空闲块），一个 <code class="docutils literal notranslate"><span class="pre">malloc</span></code> 请求大约需要 40 条指令来处理。在最坏的情况下（搜索堆的大部分甚至全部），计数相对于堆中的块数呈线性增长，搜索 1000 个块的堆可能需要数千条指令——相当糟糕！<code class="docutils literal notranslate"><span class="pre">free</span></code> 是一个快速的、恒定时间的操作，每次调用大约需要 10 条指令。隐式空闲链表可以在 <code class="docutils literal notranslate"><span class="pre">pattern/trace</span></code> 脚本上实现令人满意的 60% 左右的平均利用率，这得益于隐式的回收。对于任何一个分配器来说，利用率达到 50% 以上都是一项非常值得骄傲的成就！</p>
+<p><strong>显式空闲链表分配器</strong>。在最好的情况下（立即找到空闲块），<code class="docutils literal notranslate"><span class="pre">malloc</span></code> 大约需要 50 条指令。在最坏的情况下，搜索会下降到 <code class="docutils literal notranslate"><span class="pre">O(N)</span></code>，但这只与空闲块的数量呈线性关系，而不是块的总数。合并一对块的时间复杂度应为 <code class="docutils literal notranslate"><span class="pre">O(1)</span></code>，可能约为 30 条指令。根据你的设计，这些指令可能会计入你的 <code class="docutils literal notranslate"><span class="pre">free/malloc/realloc</span></code> 中。对于某些工作负载，更积极的回收策略会使得显式利用率比隐式利用率更高，但就平均而言，二者差别不会太大。</p>
+<p><code class="docutils literal notranslate"><span class="pre">realloc</span></code> 是一个难以衡量的操作。如果就地调整块的大小，则可以快速提供服务（大约 30 条指令），否则将会达到 <code class="docutils literal notranslate"><span class="pre">malloc+memcpy+free</span></code> 的计数总和。拷贝有效负载可能在总成本中占具主导地位，因此指令数量根据块的大小而发生变化。</p>
+<p>以上分析只是让你大致了解可能发生的情况，但并不意味着这些是绝对要求。这些计数选取自最低要求的简单实现，除了使用 <code class="docutils literal notranslate"><span class="pre">-O2</span></code> 进行编译之外，几乎没有进行任何优化。你的指令计数可能会更高一点，这没有问题。如果你努力降低计数，那就更好了！</p>
+<p><strong>注意</strong>：不要沉迷于绝对数字，而要把注意力集中在“从这些相对的比较中，可以学到什么技能”。例如，比较相同工作负载上两个不同分配器的性能，可以让你观察两种方法之间的区别。在设计、重构的前后，将分配器与其自身进行比较，可以让你衡量修改产生的影响。在各种工作负载上将分配器与其自身进行比较，可以观察其在不同场景中的优势/劣势。</p>
+</section>
+<section id="id15">
+<h3>编译器优化<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<p>一旦完成并彻底测试了你的实现，请随意更改 <code class="docutils literal notranslate"><span class="pre">Makefile</span></code> 的顶部配置，尝试让 GCC 进行更积极地优化。虽然在活跃的开发阶段，使用 <code class="docutils literal notranslate"><span class="pre">-O0</span></code> 生成的代码更容易调试，但一旦致力于性能优化，请尝试更激进的优化级别和选项，例如 <code class="docutils literal notranslate"><span class="pre">-O2</span></code>。但请注意，优化后的汇编指令不再是 C 代码的简单转换，因此单步执行时，它可能会跳过某些代码，显示意想不到的情况。</p>
+</section>
+</section>
+<section id="id16">
+<h2>测试与提交<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<p>默认的 <code class="docutils literal notranslate"><span class="pre">sanitycheck</span></code> 的配置是收集指令计数并统计数据。它在 <code class="docutils literal notranslate"><span class="pre">callgrind</span></code> 下运行分配器来获取总指令数，并除以请求数来计算每个请求的平均指令数。在你的 <code class="docutils literal notranslate"><span class="pre">custom_tests</span></code> 文件中，每一行都应该是基于脚本的测试。例如：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">test_implicit</span> <span class="n">samples</span><span class="o">/</span><span class="n">pattern</span><span class="o">-</span><span class="n">recycle</span><span class="o">.</span><span class="n">script</span> 
+<span class="n">test_explicit</span> <span class="n">samples</span><span class="o">/</span><span class="n">pattern</span><span class="o">-</span><span class="n">recycle</span><span class="o">.</span><span class="n">script</span>
+</pre></div>
+</div>
+<p>运行 <code class="docutils literal notranslate"><span class="pre">sanitycheck</span> <span class="pre">custom_tests</span></code> 将报告 <code class="docutils literal notranslate"><span class="pre">custom_tests</span></code> 文件中列出的每个此类测试的平均指令数。</p>
+<p>作业提交方式参考作业 0，可以使用 <code class="docutils literal notranslate"><span class="pre">submit</span></code> 提交你的代码。为了追求完美，一些加分项值得你去注意：</p>
+<ul class="simple">
+<li><p>编译是否干净，有无警告等编译错误？</p></li>
+<li><p>默认测试是否全部通过？</p></li>
+<li><p>自定义测试案例是否全面？</p></li>
+</ul>
+<p>对于代码实现部分：</p>
+<ul class="simple">
+<li><p>算法是否高效？还记得如何分析算法复杂度吗？</p></li>
+<li><p>代码风格及可读性是否注意过？有没有进行函数拆分，提取出一些更通用的代码？</p></li>
+<li><p>有没有尝试编写文档？一份好的代码就如同一篇优美的散文，不多一字，也不少一字。加油！</p></li>
+</ul>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          <a class="prev-page" href="../lab_6/index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>上一页</span>
+                </div>
+                
+                <div class="title">实验 6. 优化和分析</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, <a href='https://www.stickmind.com/' target="_blank">StickMind</a>
+            </div>
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            本页目录
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">作业 6：堆分配器</a><ul>
+<li><a class="reference internal" href="#id2">初始项目</a></li>
+<li><a class="reference internal" href="#id3">重要提示</a></li>
+<li><a class="reference internal" href="#id4">任务 1：测试工具</a><ul>
+<li><a class="reference internal" href="#id5">分配器脚本</a></li>
+<li><a class="reference internal" href="#id6">测试工具</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bump">任务 2：探究 Bump 分配器</a></li>
+<li><a class="reference internal" href="#id7">任务 3：实现自己的分配器</a><ul>
+<li><a class="reference internal" href="#id8">一般要求</a></li>
+<li><a class="reference internal" href="#validate-heap"><code class="docutils literal notranslate"><span class="pre">validate_heap</span></code></a></li>
+<li><a class="reference internal" href="#dump-heap"><code class="docutils literal notranslate"><span class="pre">dump_heap</span></code></a></li>
+<li><a class="reference internal" href="#id9">隐式空闲链表分配器</a></li>
+<li><a class="reference internal" href="#id10">显式空闲链表分配器</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id11">性能和效率</a><ul>
+<li><a class="reference internal" href="#id12">利用率</a></li>
+<li><a class="reference internal" href="#id13">指令计数</a></li>
+<li><a class="reference internal" href="#id14">性能</a></li>
+<li><a class="reference internal" href="#id15">编译器优化</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id16">测试与提交</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../../_static/documentation_options.js?v=7d86a446"></script>
+    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/tabs.js?v=3ee01567"></script>
+    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.staticfile.org/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+    </body>
+</html>
