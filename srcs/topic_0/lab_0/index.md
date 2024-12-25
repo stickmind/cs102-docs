@@ -70,7 +70,7 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 
 ## 配置 SFTP 插件
 
-完成插件安装后，你可以使用本课程提供的初始项目文件 `starter-proj.zip`。该项目已预先配置了 VS Code 与 SFTP 的框架。请解压该文件，并使用 VS Code 打开解压后的 `starter-proj` 文件夹。接下来，在 `.vscode` 文件夹内找到并编辑 `sftp.json` 文件，以修改以下关键信息：
+完成插件安装后，你可以使用本课程提供的初始项目文件 `starter-proj.zip`（[点击下载](./assets/starter-proj.zip)）。该项目已预先配置了 VS Code 与 SFTP 的框架。请解压该文件，并使用 VS Code 打开解压后的 `starter-proj` 文件夹。接下来，在 `.vscode` 文件夹内找到并编辑 `sftp.json` 文件，以修改以下关键信息：
 
 - `username`：请填写你的服务器用户名。
 - `password`：请输入你的服务器密码。
