@@ -9,11 +9,11 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
         <title>文件操作 - CS102 文档</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/pied-piper-admonition.css?v=e32e2275" />
     
     
@@ -73,7 +73,7 @@
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -88,22 +88,63 @@
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
@@ -302,10 +343,10 @@
         </div>
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="id1">
-<h1>文件操作<a class="headerlink" href="#id1" title="Link to this heading">#</a></h1>
+<h1>文件操作<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h1>
 <p>Linux 提供了许多命令用于查看文件的内容、创建新文件或空文件、更改文件的时间戳以及移动、删除和重命名文件或目录。这些命令可以用于管理数据和文件，并确保在正确的位置提供正确的数据。在本节中，我们将学习如何管理文件。</p>
 <section id="id2">
-<h2>查看文件<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<h2>查看文件<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
 <div class="table-wrapper colwidths-auto docutils container">
 <table class="docutils align-default">
 <thead>
@@ -335,7 +376,7 @@
 <p><em><strong>补充</strong>：<code class="docutils literal notranslate"><span class="pre">vi</span></code> 编辑器使用 <strong><code class="docutils literal notranslate"><span class="pre">j</span></code></strong> 向下滚动，<strong><code class="docutils literal notranslate"><span class="pre">k</span></code></strong> 向上滚动，使用 <strong><code class="docutils literal notranslate"><span class="pre">/</span></code></strong> 向后查找，使用 <strong><code class="docutils literal notranslate"><span class="pre">?</span></code></strong> 向前查找。</em></p>
 </section>
 <section id="id3">
-<h2>文件的创建<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<h2>文件的创建<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">touch</span></code> 命令常用于更新文件的状态，默认修改文件时间戳为当前时间。不过，我们也可以使用该命令创建一个空白文件：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">touch</span> <span class="n">myfile</span>
 </pre></div>
@@ -347,7 +388,7 @@
 <p><img alt="touch" class="align-center" src="../../_images/touch.png" /></p>
 </section>
 <section id="id4">
-<h2>文件移动、重命名等<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
+<h2>文件移动、重命名等<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">mv</span></code> 命令可以实现两个功能：</p>
 <ul class="simple">
 <li><p>重命名文件或文件夹</p></li>
@@ -379,7 +420,7 @@
 </div>
 </section>
 <section id="id5">
-<h2>文件夹创建和删除<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<h2>文件夹创建和删除<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">mkdir</span></code> 命令用于创建目录文件夹，例如，在当前目录创建文件夹可以使用</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">myfolder</span>
 </pre></div>
@@ -411,7 +452,7 @@
 </div>
 </section>
 <section id="id6">
-<h2>修改命令行提示符<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<h2>修改命令行提示符<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h2>
 <p>命令行工具通过变量 <code class="docutils literal notranslate"><span class="pre">PS1</span></code> 存储命令行的文本字符串，一般 Linux 发行版会默认设置一个值，例如：</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cs@stickmind:~$ 
 </pre></div>
@@ -427,7 +468,7 @@
 <p><strong>注意</strong>，在终端直接赋值变量名，仅在当前激活的终端有效。重新打开终端，变量内容仍然是默认值。如果我们想永久修改该变量，可以尝试在 <code class="docutils literal notranslate"><span class="pre">.bashrc</span></code> 中进行设置。</p>
 </section>
 <section id="id7">
-<h2>练习<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
+<h2>练习<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">touch</span></code> 创建两个文件 <code class="docutils literal notranslate"><span class="pre">file1</span></code> 和 <code class="docutils literal notranslate"><span class="pre">file2</span></code></p></li>
 <li><p>使用 <code class="docutils literal notranslate"><span class="pre">ls</span> <span class="pre">-l</span></code> 检查文件状态</p></li>
@@ -510,12 +551,12 @@
     </aside>
   </div>
 </div><script src="../../_static/documentation_options.js?v=7d86a446"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/tabs.js?v=3ee01567"></script>
-    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     </body>
 </html>

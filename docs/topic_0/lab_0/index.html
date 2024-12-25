@@ -9,11 +9,11 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
         <title>实验 0：上手 Linux 开发环境 - CS102 文档</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=4c969af8" />
-    <link rel="stylesheet" type="text/css" href="../../_static/design-style.1e8bd061cd6da7fc9cf755528e8ffc24.min.css?v=0a3b3ea7" />
-    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=302659d7" />
     <link rel="stylesheet" type="text/css" href="../../_static/pied-piper-admonition.css?v=e32e2275" />
     
     
@@ -73,7 +73,7 @@
   <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
       <circle cx="12" cy="12" r="5"></circle>
       <line x1="12" y1="1" x2="12" y2="3"></line>
       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -88,22 +88,63 @@
   <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
     </svg>
   </symbol>
-  <symbol id="svg-sun-half" viewBox="0 0 24 24">
-    <title>Auto light/dark mode</title>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M13 12h5" />
-      <path d="M13 15h4" />
-      <path d="M13 18h1" />
-      <path d="M13 9h4" />
-      <path d="M13 6h1" />
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
     </svg>
   </symbol>
 </svg>
@@ -302,87 +343,87 @@
         </div>
         <article role="main">
           <section class="tex2jax_ignore mathjax_ignore" id="linux">
-<h1>实验 0：上手 Linux 开发环境<a class="headerlink" href="#linux" title="Link to this heading">#</a></h1>
-<p>本课程开发环境选用远程 Linux 云端服务器和命令行工具，搭配本地终端和 VS Code 即可完成所有练习。</p>
-<p>本次实验将带大家练习远程开发的流程，实验结束后，你应该能够连接上课程的远程服务器，并能够使用终端命令，搭配 VS Code 进行代码编辑。</p>
+<h1>实验 0：上手 Linux 开发环境<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h1>
+<p>本课程采用了远程 Linux 云端服务器与命令行工具作为开发环境，仅需结合本地终端及 Visual Studio Code（VS Code），即可圆满完成所有实践练习。</p>
+<p>本次实验旨在引导大家熟悉远程开发的整个流程。实验结束时，你应能成功连接到课程的远程服务器，并熟练运用终端命令，在 VS Code 中进行高效的代码编辑。</p>
 <div class="note admonition">
 <p class="admonition-title">为什么使用远程服务器进行开发？</p>
-<p>如果回到上个世纪 80 年代，即使电脑就在你的面前，你也必须使用终端才能对计算机进行操作。现如今，随着个人计算机的发展，虽然图形界面早已成熟，但在真实的开发场景中，使用终端开发仍然占据主导地位。大量的前后端框架、开源项目、开发工具，也严重依赖终端操作。</p>
-<p>本课程尽量还原类似的真实开发场景。当你以后有机会去软件公司实习时，你会发现，在这里掌握的技能，将会给你带来极大的回报。</p>
+<p>回溯至上世纪 80 年代，即便电脑近在咫尺，我们也需借助终端方能与之交互。时至今日，尽管个人计算机已取得了长足进步，图形界面亦日趋完善，但在实际的开发环境中，终端操作依然占据核心地位。众多前后端框架、开源项目及开发工具，均深度依赖于终端指令。</p>
+<p>本课程致力于模拟此类真实的开发情境。当你未来有幸踏入软件公司的门槛，你会发现，在此所学的技能将为你带来难以估量的价值。</p>
 </div>
 <section id="id1">
-<h2>登录课程云服务器<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
-<p>服务器 IP 地址为 <code class="docutils literal notranslate"><span class="pre">106.14.165.94</span></code>，在任何支持 <code class="docutils literal notranslate"><span class="pre">ssh</span></code> 命令的<strong>计算机终端</strong><a class="footnote-reference brackets" href="#id6" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>上输入如下命令。</p>
+<h2>登录课程云服务器<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<p>服务器 IP 地址为 <code class="docutils literal notranslate"><span class="pre">121.41.65.84</span></code>，你只需在任何支持 SSH 命令的计算机终端中输入以下指令即可连接。</p>
 <ul class="simple">
-<li><p>Window 11 已搭载 Windows Terminal</p></li>
-<li><p>Linux/macOS 内置 Terminal</p></li>
+<li><p>对于 Windows 11 用户，系统已预装 Windows Terminal 供你使用。</p></li>
+<li><p>而 Linux 及 macOS 用户，则可直接利用内置的 Terminal 进行操作。</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">YourName</span><span class="o">@</span><span class="mf">106.14.165.94</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">YourName</span><span class="o">@</span><span class="mf">121.41.65.84</span>
 </pre></div>
 </div>
-<p>第一次使用会弹出确认信息，输入 <code class="docutils literal notranslate"><span class="pre">yes</span></code> 后紧接着输入服务器用户密码（输入过程中，密码不会显示），成功后的输出信息如下。</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The authenticity of host &#39;106.14.165.94 (106.14.165.94)&#39; can&#39;t be established.
+<p>首次使用时，系统会弹出一个确认提示。此时，请输入 <code class="docutils literal notranslate"><span class="pre">yes</span></code> 进行确认，并紧接着输入服务器的用户密码（请注意，在输入密码的过程中，屏幕上不会显示任何字符以保护你的隐私）。一旦验证成功，你将会看到如下输出信息：</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The authenticity of host &#39;121.41.65.84 (121.41.65.84)&#39; can&#39;t be established.
 ED25519 key fingerprint is SHA256:LHvn4qDvTdM1+GcJtG2f+uywxDA2JSys.
 This key is not known by any other names
 Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
 
-Warning: Permanently added &#39;106.14.165.94&#39; (ED25519) to the list of known hosts.
-YourName@106.14.165.94&#39;s password:     
+Warning: Permanently added &#39;121.41.65.84&#39; (ED25519) to the list of known hosts.
+YourName@121.41.65.84&#39;s password:
 
 Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 </pre></div>
 </div>
-<p>查看服务器信息常用命令</p>
+<p>常用服务器信息查询命令概览</p>
 <ul class="simple">
-<li><p>查看主机名：<code class="docutils literal notranslate"><span class="pre">hostname</span></code></p></li>
-<li><p>查看用户名：<code class="docutils literal notranslate"><span class="pre">whoami</span></code></p></li>
-<li><p>查看硬盘空间：<code class="docutils literal notranslate"><span class="pre">df</span> <span class="pre">-h</span></code> （仅 <code class="docutils literal notranslate"><span class="pre">root</span></code> 权限）</p></li>
-<li><p>查看内存状态：<code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">-h</span></code></p></li>
-<li><p>查看当前文件夹空间：<code class="docutils literal notranslate"><span class="pre">du</span> <span class="pre">--max-depth=1</span> <span class="pre">-h</span></code></p></li>
-<li><p>修改登录密码：<code class="docutils literal notranslate"><span class="pre">passwd</span></code></p></li>
+<li><p><strong>查看主机名</strong>：使用 <code class="docutils literal notranslate"><span class="pre">hostname</span></code> 命令可以获取当前服务器的主机名称。</p></li>
+<li><p><strong>查看当前用户名</strong>：通过 <code class="docutils literal notranslate"><span class="pre">whoami</span></code> 命令，你可以确认当前登录的用户身份。</p></li>
+<li><p><strong>检查硬盘空间</strong>：执行 <code class="docutils literal notranslate"><span class="pre">df</span> <span class="pre">-h</span></code> 命令（需 root 权限）能够直观地查看服务器的硬盘使用情况及剩余空间（以人类可读的格式显示）。</p></li>
+<li><p><strong>查看内存状态</strong>：<code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">-h</span></code> 命令将为你提供服务器内存的当前使用状况概览，包括已用、空闲及交换空间等信息（同样以人类可读的格式）。</p></li>
+<li><p><strong>当前文件夹空间使用情况</strong>：利用 <code class="docutils literal notranslate"><span class="pre">du</span> <span class="pre">--max-depth=1</span> <span class="pre">-h</span></code> 命令，你可以快速了解当前目录下各子目录及文件的磁盘占用情况（限制显示深度为 1 层，并以人类可读的格式展示）。</p></li>
+<li><p><strong>修改登录密码</strong>：若需更改你的登录密码，请运行 <code class="docutils literal notranslate"><span class="pre">passwd</span></code> 命令，并按照提示操作即可。</p></li>
 </ul>
 </section>
 <section id="sftp">
-<h2>基于 SFTP 远程开发工作流<a class="headerlink" href="#sftp" title="Link to this heading">#</a></h2>
-<p>使用命令行成功登录服务器后，说明你的计算机已经包含了 SSH 等工具。为了便于开发，可以使用流行的 VS Code 文本编辑器辅助编辑、同步项目代码。</p>
+<h2>基于 SFTP 远程开发工作流<a class="headerlink" href="#sftp" title="Link to this heading">¶</a></h2>
+<p>成功通过命令行登录服务器，意味着你的计算机已配备了诸如 SSH 等工具。为了提升开发效率，你可以借助广受欢迎的 VS Code 文本编辑器来辅助代码的编辑与项目代码的同步。</p>
 <div class="note admonition">
 <p class="admonition-title">为什么本课程不推荐使用 VS Code 官方 Remote 插件？</p>
-<p>如果使用官方 Remote 插件，一旦连接服务器，VS Code 会在 <code class="docutils literal notranslate"><span class="pre">home</span></code> 目录不断生成 <code class="docutils literal notranslate"><span class="pre">.vscode-server</span></code> 垃圾文件，严重的时候甚至达到几个 GB 的空间。</p>
-<p>除此之外，官方 Remote 插件内存占用也比较高，每个用户都会消耗几百 MB 的内存资源。</p>
-<p>如此高的资源消耗，即便国内外各大高校自建的校内服务器，也无法承受。</p>
+<p>原因在于，一旦你通过官方 Remote 插件连接到服务器，VS Code 会在你的 <code class="docutils literal notranslate"><span class="pre">home</span></code> 目录下持续生成名为 <code class="docutils literal notranslate"><span class="pre">.vscode-server</span></code> 的冗余文件。在极端情况下，这些文件可能会占据高达数 GB 的磁盘空间，从而对你的服务器性能造成显著影响。</p>
+<p>此外，官方 Remote 插件的内存占用也相对较高，每位用户都可能消耗掉数百 MB 的内存资源。</p>
+<p>鉴于这种高昂的资源消耗，即便是国内外各大高校自建的校内服务器，也难以承受其带来的压力。</p>
 <p><em>参考：<a class="reference external" href="https://github.com/microsoft/vscode-remote-release/issues/6429">Copies of vscode-server installed on school servers take up excessive storage and RAM</a></em></p>
 </div>
 </section>
-<section id="id3">
-<h2>安装 SFTP 插件<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
-<p>在 VS Code 插件市场搜索 <code class="docutils literal notranslate"><span class="pre">SFTP</span></code>，选择安装 Natizyskunk 开发的 <code class="docutils literal notranslate"><span class="pre">SFTP</span></code> 插件，如图所示。</p>
+<section id="id2">
+<h2>安装 SFTP 插件<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<p>在 VS Code 的插件市场中，请搜索 “SFTP”，并从中选择并安装由 Natizyskunk 开发的 SFTP 插件，具体安装步骤及界面如图所示。</p>
 <p><img alt="sftp" class="align-center" src="../../_images/sftp.png" /></p>
 </section>
-<section id="id4">
-<h2>配置 SFTP 插件<a class="headerlink" href="#id4" title="Link to this heading">#</a></h2>
-<p>安装完插件之后，可以使用本课程提供的初始项目 <code class="docutils literal notranslate"><span class="pre">starter-proj.zip</span></code>，该项目已设置好 VS Code 和 <code class="docutils literal notranslate"><span class="pre">SFTP</span></code> 配置框架。解压后使用 VS Code 打开 <code class="docutils literal notranslate"><span class="pre">starter-proj</span></code> 文件夹。在 <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> 文件夹下，编辑 <code class="docutils literal notranslate"><span class="pre">sftp.json</span></code> 文件修改以下几个信息：</p>
+<section id="id3">
+<h2>配置 SFTP 插件<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<p>完成插件安装后，你可以使用本课程提供的初始项目文件 <code class="docutils literal notranslate"><span class="pre">starter-proj.zip</span></code>。该项目已预先配置了 VS Code 与 SFTP 的框架。请解压该文件，并使用 VS Code 打开解压后的 <code class="docutils literal notranslate"><span class="pre">starter-proj</span></code> 文件夹。接下来，在 <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> 文件夹内找到并编辑 <code class="docutils literal notranslate"><span class="pre">sftp.json</span></code> 文件，以修改以下关键信息：</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code>：服务器用户名</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">password</span></code>：服务器密码</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">remotePath</span></code>：服务器上需要编辑的项目路径，例如 <code class="docutils literal notranslate"><span class="pre">/home/xuehao/cs102/lab0/</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">username</span></code>：请填写你的服务器用户名。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">password</span></code>：请输入你的服务器密码。</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remotePath</span></code>：请指定你在服务器上希望编辑的项目路径，例如 <code class="docutils literal notranslate"><span class="pre">/home/xuehao/cs102/lab0/</span></code>。</p></li>
 </ul>
 <p><img alt="sftp-config" class="align-center" src="../../_images/sftp_config.png" /></p>
 </section>
-<section id="id5">
-<h2>使用 SFTP 插件<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
+<section id="id4">
+<h2>使用 SFTP 插件<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h2>
 <div class="attention admonition">
 <p class="admonition-title">注意</p>
-<p>参照上一步配置的 <code class="docutils literal notranslate"><span class="pre">remotePath</span></code>，必须先在服务器上提前创建好这些目录，才能进行接下来的操作。</p>
+<p>根据之前配置的<code class="docutils literal notranslate"><span class="pre">remotePath</span></code>，你需要在服务器上预先创建好相应的目录，才能继续后续的操作步骤。</p>
 </div>
-<p>配置好后，点击 VS Code 菜单栏 <strong>Help</strong> 选择 <strong>Show All Commands</strong>，或直接按 <strong>F1</strong> 快捷键，在弹出的命令列表中搜索 SFTP。选择 “<strong>SFTP: Download Project</strong>”，随后选择默认保存位置，远程服务器中的项目将会自动下载到本地的初始项目文件夹中。</p>
+<p>配置完成后，你可以通过点击 VS Code 菜单栏中的 “Help” 选项，并选择 “Show All Commands” 来查找所有命令。在弹出的命令列表中，搜索 “SFTP” 相关命令。选择 “SFTP: Download Project”，随后系统会提示你选择默认的保存位置。完成选择后，远程服务器上的项目将会自动下载到本地的初始项目文件夹中。</p>
 <p><img alt="sftp-use" class="align-center" src="../../_images/using_sftp.png" /></p>
-<p>在本地编辑完文件并保存后，SFTP 插件会自动将更新后的文件同步到远程服务器。编译、测试、调试等任务，可以通过终端 Terminal 在远程服务器上进行。</p>
+<p>当你在本地对文件进行编辑并保存后，SFTP 插件会智能地将更新后的文件自动同步至远程服务器。至于编译、测试、调试等开发任务，则完全可以通过远程服务器的终端（Terminal）来执行。</p>
 <div class="tip admonition">
 <p class="admonition-title">小技巧</p>
 <dl class="simple myst">
-<dt><strong>添加文件</strong></dt><dd><p>如果之前没有创建任何项目文件，那么当你在本地或服务器中创建文件时，并不会自动同步。此时可以使用 “<strong>SFTP: Sync Remote -&gt; Local</strong>” 或 “<strong>SFTP: Sync Local -&gt; Remote</strong>” 手动同步。</p>
+<dt><strong>添加文件</strong></dt><dd><p>若你在本地或服务器上首次创建项目文件时，SFTP 插件不会自动进行同步。在这种情况下，你可以手动选择 “SFTP: Sync Remote -&gt; Local” 或 “SFTP: Sync Local -&gt; Remote” 命令来确保文件在本地与服务器之间正确同步。</p>
 </dd>
-<dt><strong>删除文件</strong></dt><dd><p>删除文件比较特殊，以上三条命令，对删除文件不起作用。如果有文件需要删除，必须在本地和服务器中分别手动删除。</p>
+<dt><strong>删除文件</strong></dt><dd><p>值得注意的是，在删除文件方面存在特殊情况。上述的同步命令并不适用于删除操作。若你需要删除某个文件，则必须在本地和服务器上分别执行手动删除。</p>
 </dd>
 </dl>
 </div>
@@ -395,15 +436,15 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 <p class="admonition-title">危险</p>
 <p>严禁使用 Jetbrains Clion/Fleet 连接服务器！一旦连接，此类开发工具会在服务器上下载超过 2 GB 的 Java 依赖。</p>
 </div>
+</section>
+</section>
 <hr class="footnotes docutils" />
 <aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id6" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
 <p><a class="reference external" href="https://wiki.mbalib.com/wiki/%E7%BB%88%E7%AB%AF%EF%BC%88%E8%AE%A1%E7%AE%97%E6%9C%BA%EF%BC%89">终端</a>是一台电子计算机或者计算机系统，用来让用户输入数据，及显示其计算结果的机器。</p>
 </aside>
 </aside>
-</section>
-</section>
 
         </article>
       </div>
@@ -459,9 +500,9 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
 <li><a class="reference internal" href="#">实验 0：上手 Linux 开发环境</a><ul>
 <li><a class="reference internal" href="#id1">登录课程云服务器</a></li>
 <li><a class="reference internal" href="#sftp">基于 SFTP 远程开发工作流</a></li>
-<li><a class="reference internal" href="#id3">安装 SFTP 插件</a></li>
-<li><a class="reference internal" href="#id4">配置 SFTP 插件</a></li>
-<li><a class="reference internal" href="#id5">使用 SFTP 插件</a></li>
+<li><a class="reference internal" href="#id2">安装 SFTP 插件</a></li>
+<li><a class="reference internal" href="#id3">配置 SFTP 插件</a></li>
+<li><a class="reference internal" href="#id4">使用 SFTP 插件</a></li>
 </ul>
 </li>
 </ul>
@@ -474,12 +515,12 @@ Welcome to Ubuntu 22.04.1 LTS (GNU/Linux 5.15.0-52-generic x86_64)
     </aside>
   </div>
 </div><script src="../../_static/documentation_options.js?v=7d86a446"></script>
-    <script src="../../_static/doctools.js?v=888ff710"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>
+    <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/tabs.js?v=3ee01567"></script>
-    <script src="../../_static/design-tabs.js?v=36754332"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
     </body>
 </html>
